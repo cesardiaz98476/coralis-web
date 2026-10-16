@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inicio de sesión</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    button {
+      background: #0b5ed7;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .gris { background: #888; }
+    .enlace { background: none; color: #0b5ed7; padding: 4px; font-size: 14px; }
+    .panel {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .panel button { margin: 5px; }
+
+    /* Ventanas emergentes */
+    .popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .caja {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 290px;
+    }
+    .caja input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .caja button { width: 100%; margin-top: 6px; }
+    .mensaje { font-size: 14px; min-height: 18px; }
+    .error { color: red; }
+    .ok { color: green; }
+    .reglas { font-size: 12px; color: #666; margin: 2px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Lo que se ve SIN sesión: solo un botón -->
+  <div class="panel" id="fuera">
+    <button id="btnAbrirLogin">Iniciar sesión</button>
+  </div>
+
+  <!-- Lo que se ve CON sesión -->
+  <div class="panel" id="dentro" style="display: none;">
+    <h2>Hola, <span id="correoUsuario"></span></h2>
+    <button id="btnAbrirCambio">Cambiar contraseña</button>
+    <button id="btnSalir" class="gris">Cerrar sesión</button>
+  </div>
+
+  <!-- Popup 1: iniciar sesión / crear cuenta / olvidé mi contraseña -->
+  <div class="popup" id="popupLogin">
+    <div class="caja">
+      <h3>Iniciar sesión</h3>
+      <input id="correo" type="email" placeholder="Correo">
+      <input id="clave" type="password" placeholder="Contraseña">
+      <p class="reglas">Mínimo 8 caracteres, un número y un carácter especial (!@#$%...)</p>
+      <p class="mensaje" id="msgLogin"></p>
+      <button id="btnEntrar">Entrar</button>
+      <button id="btnCrear" style="background: #198754;">Crear cuenta</button>
+      <button id="btnOlvide" class="enlace">¿Olvidaste tu contraseña?</button>
+      <button class="gris" data-cerrar="popupLogin">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Popup 3: olvidé mi contraseña (solo pide el correo) -->
+  <div class="popup" id="popupOlvide">
+    <div class="caja">
+      <h3>Restablecer contraseña</h3>
+      <p class="reglas">Escribe tu correo y te enviaremos un enlace para crear una contraseña nueva.</p>
+      <input id="correoOlvide" type="email" placeholder="Correo">
+      <p class="mensaje" id="msgOlvide"></p>
+      <button id="btnEnviarOlvide">Enviar correo</button>
+      <button class="gris" data-cerrar="popupOlvide">Volver</button>
+    </div>
+  </div>
+
+  <!-- Popup 2: cambiar contraseña (solo con sesión iniciada) -->
+  <div class="popup" id="popupCambio">
+    <div class="caja">
+      <h3>Cambiar contraseña</h3>
+      <input id="claveActual" type="password" placeholder="Contraseña actual">
+      <input id="claveNueva" type="password" placeholder="Contraseña nueva">
+      <p class="reglas">Mínimo 8 caracteres, un número y un carácter especial (!@#$%...)</p>
+      <p class="mensaje" id="msgCambio"></p>
+      <button id="btnCambiar">Guardar</button>
+      <button class="gris" data-cerrar="popupCambio">Cancelar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    // ============================================================
+    // 1) CONEXIÓN CON FIREBASE
+    // Estos datos le dicen a la página CUÁL es tu proyecto de Firebase.
+    // Cualquier página que use estos mismos datos comparte los mismos usuarios.
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyCap_W0d4Tq7CIq9KHL-SjW1cYFK_9FeNY",
+      authDomain: "coralis-2ddd8.firebaseapp.com",
+      databaseURL: "https://coralis-2ddd8-default-rtdb.firebaseio.com",
+      projectId: "coralis-2ddd8",
+      appId: "1:741966519586:web:8a94322c2b0086c36f197b",
+    };
+
+    // Librerías de Firebase (se descargan de internet, no hay que instalar nada)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,      // entrar
+      createUserWithEmailAndPassword,  // crear cuenta
+      sendPasswordResetEmail,          // "olvidé mi contraseña" (manda un correo)
+      EmailAuthProvider,
+      reauthenticateWithCredential,    // confirmar la contraseña actual
+      updatePassword,                  // poner la contraseña nueva
+      signOut,                         // salir
+      onAuthStateChanged,              // avisa cuando alguien entra o sale
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);       // el "portero": maneja usuarios y contraseñas
+    auth.languageCode = "es";        // los correos de Firebase llegan en español
+    const db = getDatabase(app);     // la base de datos (carpetas como "usuarios")
+
+    // ============================================================
+    // 2) FUNCIONES DE AYUDA
+    // ============================================================
+    const $ = (id) => document.getElementById(id);
+
+    function abrir(id) { $(id).style.display = "flex"; }
+    function cerrar(id) {
+      $(id).style.display = "none";
+      $(id).querySelectorAll("input").forEach((i) => (i.value = ""));
+      $(id).querySelector(".mensaje").textContent = "";
+    }
+
+    // Muestra un mensaje en verde (ok) o en rojo (error)
+    function mensaje(id, texto, tipo) {
+      $(id).textContent = texto;
+      $(id).className = "mensaje " + tipo;
+    }
+
+    // Firebase devuelve códigos de error en inglés; aquí los traducimos
+    const ERRORES = {
+      "auth/invalid-credential": "Correo o contraseña incorrectos",
+      "auth/wrong-password": "La contraseña actual no es correcta",
+      "auth/invalid-email": "El correo no es válido",
+      "auth/missing-email": "Escribe tu correo",
+      "auth/missing-password": "Escribe la contraseña",
+      "auth/email-already-in-use": "Ya existe una cuenta con ese correo",
+      "auth/weak-password": "La contraseña es demasiado débil",
+      "auth/password-does-not-meet-requirements": "La contraseña no cumple los requisitos",
+      "auth/too-many-requests": "Demasiados intentos, espera un momento",
+    };
+    const traducir = (e) => ERRORES[e.code] || "Error: " + e.message;
+
+    // Revisa que la contraseña cumpla las reglas.
+    // Devuelve el problema que encuentre, o "" si está bien.
+    function revisarClave(clave) {
+      if (clave.length < 8) return "La contraseña debe tener mínimo 8 caracteres";
+      if (!/[0-9]/.test(clave)) return "La contraseña debe tener al menos un número";
+      if (!/[^A-Za-z0-9]/.test(clave)) return "La contraseña debe tener un carácter especial (!@#$%...)";
+      return "";
+    }
+
+    // ============================================================
+    // 3) INICIAR SESIÓN
+    // Firebase revisa si existe una cuenta con ese correo y si la contraseña
+    // coincide. La página NUNCA ve las contraseñas guardadas.
+    // ============================================================
+    async function entrar() {
+      try {
+        await signInWithEmailAndPassword(auth, $("correo").value.trim(), $("clave").value);
+        cerrar("popupLogin");
+      } catch (e) {
+        mensaje("msgLogin", traducir(e), "error");
+      }
+    }
+
+    // ============================================================
+    // 4) CREAR CUENTA
+    // Firebase guarda la cuenta (Authentication > Users) con la contraseña cifrada.
+    // Además guardamos una ficha en la carpeta "usuarios" de la base de datos.
+    // ============================================================
+    async function crearCuenta() {
+      const problema = revisarClave($("clave").value);
+      if (problema) return mensaje("msgLogin", problema, "error");
+      try {
+        const resultado = await createUserWithEmailAndPassword(auth, $("correo").value.trim(), $("clave").value);
+        const usuario = resultado.user;
+        await set(ref(db, "usuarios/" + usuario.uid), {
+          correo: usuario.email,
+          creado: new Date().toISOString(),
+        });
+        cerrar("popupLogin");
+        alert("Cuenta creada");
+      } catch (e) {
+        mensaje("msgLogin", traducir(e), "error");
+      }
+    }
+
+    // ============================================================
+    // 5) OLVIDÉ MI CONTRASEÑA
+    // Firebase manda un correo con un enlace para poner una contraseña nueva.
+    // ============================================================
+    // Se abre su propio popup (encima del de login) donde solo se pide el correo
+    function abrirOlvide() {
+      abrir("popupOlvide");
+      $("correoOlvide").value = $("correo").value;   // si ya lo había escrito, lo copiamos
+    }
+
+    async function olvide() {
+      const correo = $("correoOlvide").value.trim();
+      if (!correo) return mensaje("msgOlvide", "Escribe tu correo", "error");
+      try {
+        await sendPasswordResetEmail(auth, correo);
+        // Por seguridad Firebase no dice si el correo tiene cuenta o no
+        mensaje("msgOlvide", "Si ese correo tiene cuenta, te llegará un enlace. Revisa también la carpeta de spam.", "ok");
+      } catch (e) {
+        mensaje("msgOlvide", traducir(e), "error");
+      }
+    }
+
+    // ============================================================
+    // 6) CAMBIAR CONTRASEÑA (con sesión iniciada)
+    // Por seguridad, Firebase pide confirmar la contraseña actual antes.
+    // ============================================================
+    async function cambiarClave() {
+      const usuario = auth.currentUser;
+      const problema = revisarClave($("claveNueva").value);
+      if (problema) return mensaje("msgCambio", problema, "error");
+      try {
+        const credencial = EmailAuthProvider.credential(usuario.email, $("claveActual").value);
+        await reauthenticateWithCredential(usuario, credencial);
+        await updatePassword(usuario, $("claveNueva").value);
+        mensaje("msgCambio", "Contraseña cambiada", "ok");
+        setTimeout(() => cerrar("popupCambio"), 1200);
+      } catch (e) {
+        const texto = e.code === "auth/invalid-credential" ? "La contraseña actual no es correcta" : traducir(e);
+        mensaje("msgCambio", texto, "error");
+      }
+    }
+
+    // ============================================================
+    // 7) CERRAR SESIÓN
+    // ============================================================
+    async function salir() {
+      if (confirm("¿Seguro que quieres cerrar sesión?")) await signOut(auth);
+    }
+
+    // ============================================================
+    // 8) ¿HAY ALGUIEN CON SESIÓN?
+    // Firebase llama a esta función al abrir la página y cada vez que alguien
+    // entra o sale. La sesión se recuerda aunque cierres el navegador.
+    // ============================================================
+    onAuthStateChanged(auth, (usuario) => {
+      if (usuario) {
+        $("correoUsuario").textContent = usuario.email;
+        $("fuera").style.display = "none";
+        $("dentro").style.display = "block";
+      } else {
+        $("fuera").style.display = "block";
+        $("dentro").style.display = "none";
+      }
+    });
+
+    // ============================================================
+    // 9) CONECTAR LOS BOTONES CON SUS FUNCIONES
+    // ============================================================
+    $("btnAbrirLogin").addEventListener("click", () => abrir("popupLogin"));
+    $("btnAbrirCambio").addEventListener("click", () => abrir("popupCambio"));
+    $("btnEntrar").addEventListener("click", entrar);
+    $("btnCrear").addEventListener("click", crearCuenta);
+    $("btnOlvide").addEventListener("click", abrirOlvide);
+    $("btnEnviarOlvide").addEventListener("click", olvide);
+    $("btnCambiar").addEventListener("click", cambiarClave);
+    $("btnSalir").addEventListener("click", salir);
+    document.querySelectorAll("[data-cerrar]").forEach((b) =>
+      b.addEventListener("click", () => cerrar(b.dataset.cerrar)));
+  </script>
+
+</body>
+</html>
+
+
+

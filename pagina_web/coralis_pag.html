@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coralis</title>
+
+  <!-- Estilos (los haremos después en estilos.css) -->
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <main class="portada">
+
+    <section class="lado-login">
+      <div class="tarjeta-login">
+        <h2>Iniciar sesión</h2>
+
+        <form id="Login">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" placeholder="tucorreo@ejemplo.com" required>
+
+          <label for="clave">Contraseña</label>
+          <input type="password" id="clave" placeholder="Tu contraseña" required>
+
+          <p class="mensaje" id="msgLogin"></p>
+
+          <button type="submit" id="btnEntrar">Entrar</button>
+        </form>
+
+        <button type="button" class="enlace" id="botonCuenta">Crea tu cuenta</button>
+
+        <button type="button" class="enlace" id="botonOlvide">¿Olvidaste tu contraseña?</button>
+      </div>
+    </section>
+
+    <!-- ========== LADO DERECHO: LOGO E INTRODUCCIÓN ========== -->
+    <section class="lado-info">
+      <img src="coralis.png" alt="Logo de Coralis" class="logo">
+
+      <h1>Coralis</h1>
+      <p class="lema">Monitoreo de la calidad del agua marina</p>
+
+      <p class="introduccion">
+        Somos un proyecto que mide en tiempo real la temperatura, el pH y la turbidez
+        del agua mediante sensores conectados a una Raspberry Pi. Los datos viajan por
+        LoRaWAN hasta la nube para que puedas consultarlos desde cualquier lugar y
+        ayudar a cuidar los ecosistemas marinos.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- ========== VENTANA EMERGENTE: RESTABLECER CONTRASEÑA ========== -->
+  <div class="popup" id="popupOlvide">
+    <div class="caja-popup">
+      <h3>Restablecer contraseña</h3>
+      <p>Escribe tu correo y te enviaremos un enlace para crear una contraseña nueva.</p>
+
+      <input type="email" id="correoOlvide" placeholder="tucorreo@ejemplo.com" required>
+      <p class="mensaje" id="msgOlvide"></p>
+
+      <button type="button" id="botonEnviarOlvide">Enviar correo</button>
+      <button type="button" class="secundario" id="botonCerrarOlvide">Volver</button>
+    </div>
+  </div>
+
+  <!-- ========== VENTANA EMERGENTE: CREAR CUENTA ========== -->
+  <div class="popup" id="popupCuenta">
+    <div class="caja-popup">
+      <h3>Crea tu cuenta</h3>
+      <p>Escribe tu correo y tu contraseña</p>
+
+      <input type="email" id="correoNuevo" placeholder="tucorreo@ejemplo.com">
+      <input type="password" id="claveNueva" placeholder="Contraseña">
+      <input type="password" id="claveRepetida" placeholder="Repite la contraseña">
+      <p class="reglas">Mínimo 8 caracteres, un número y un carácter especial (!@#$%...)</p>
+      <p class="mensaje" id="msgCuenta"></p>
+
+      <button type="button" id="botonEnviarCuenta">Crear cuenta</button>
+      <button type="button" class="secundario" id="botonCerrarCuenta">Volver</button>
+    </div>
+  </div>
+
+  <!-- Funciones (las haremos después en app.js) -->
+  <script type="module" src="datos_entrada.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coralis | Panel</title>
+
+  <!-- El mismo CSS de la página de login -->
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <div class="contenedor">
+
+  <aside class="lateral">
+    <div class="marca">
+      <img src="coralis.png" alt="Logo de Coralis" class="logo-barra">
+      <span class="nombre">Coralis</span>
+    </div>
+
+    <!-- Menú para cambiar de sección -->
+    <nav class="menu">
+      <button type="button" class="pestana activa" id="btnInicio">📊 Inicio</button>
+      <button type="button" class="pestana" id="btnConsultas">🪸 Consultas</button>
+      <button type="button" class="pestana" id="btnCuenta">👤 Mi cuenta</button>
+    </nav>
+
+    <!-- Abajo del todo: correo y cerrar sesión -->
+    <div class="sesion">
+      
+      <button type="button" class="secundario" id="btnSalir">Cerrar sesión</button>
+    </div>
+  </aside>
+
+
+  <main class="panel">
+
+    <!-- ========== SECCIÓN 1: INICIO (LAS GRÁFICAS) ========== -->
+    <section id="inicio">
+      <h1>Calidad del agua</h1>
+      <p class="estado" id="estadoDatos">Esperando datos...</p>
+
+      <div class="tarjetas">
+
+        <!-- Tarjeta de temperatura -->
+        <article class="tarjeta temp">
+          <div class="cabeza">
+            <span class="icono">🌡️</span>
+            <div>
+              <h3>Temperatura</h3>
+              <p class="subtitulo">Última lectura</p>
+            </div>
+          </div>
+          <p class="valor"><span id="valorTemp">--</span> °C</p>
+          <p class="cambio" id="cambioTemp"></p>
+          <canvas id="graficaTemp"></canvas>
+        </article>
+
+        <!-- Tarjeta de pH -->
+        <article class="tarjeta ph">
+          <div class="cabeza">
+            <span class="icono">🧪</span>
+            <div>
+              <h3>pH</h3>
+              <p class="subtitulo">Última lectura</p>
+            </div>
+          </div>
+          <p class="valor"><span id="valorPh">--</span></p>
+          <p class="cambio" id="cambioPh"></p>
+          <canvas id="graficaPh"></canvas>
+        </article>
+
+        <!-- Tarjeta de turbidez -->
+        <article class="tarjeta turb">
+          <div class="cabeza">
+            <span class="icono">🌊</span>
+            <div>
+              <h3>Turbidez</h3>
+              <p class="subtitulo">Última lectura</p>
+            </div>
+          </div>
+          <p class="valor"><span id="valorTurb">--</span> V</p>
+          <p class="cambio" id="cambioTurb"></p>
+          <canvas id="graficaTurb"></canvas>
+        </article>
+
+      </div>
+    </section>
+
+
+    <!-- ========== SECCIÓN 2: CONSULTAS POR TIEMPO (FOTOS DE CORALES) ========== -->
+    <section id="consultas" hidden>
+      <h1>Consultas por tiempo</h1>
+      <p class="estado">Elige un rango de fechas para ver las fotos de los corales.</p>
+
+      <form class="filtro" id="formConsulta">
+        <div>
+          <label for="fechaDesde">Desde</label>
+          <input type="datetime-local" id="fechaDesde" required>
+        </div>
+
+        <div>
+          <label for="fechaHasta">Hasta</label>
+          <input type="datetime-local" id="fechaHasta" required>
+        </div>
+
+        <button type="submit" id="btnConsultar">Consultar</button>
+      </form>
+
+      <p class="mensaje" id="msgConsulta"></p>
+
+      <!-- Aquí el JS pone las fotos que encuentre -->
+      <div class="galeria" id="galeriaCorales"></div>
+    </section>
+
+
+    <!-- ========== SECCIÓN 3: MI CUENTA ========== -->
+    <section id="cuenta" hidden>
+      <h1>Mi cuenta</h1>
+      <p class="estado">Aquí puedes ver tu correo y cambiar tu contraseña.</p>
+
+      <div class="tarjeta tarjeta-cuenta">
+        <label>Correo</label>
+        <span class="usuario" id="correoUsuario"></span>
+        
+
+        <h3>Cambiar contraseña</h3>
+        <label for="claveActual">Contraseña actual</label>
+        <input type="password" id="claveActual" placeholder="Tu contraseña de ahora">
+
+        <label for="claveNueva">Contraseña nueva</label>
+        <input type="password" id="claveNueva" placeholder="Contraseña nueva">
+
+        <label for="claveRepetida">Repite la contraseña nueva</label>
+        <input type="password" id="claveRepetida" placeholder="Repite la contraseña">
+
+        <p class="reglas">Mínimo 8 caracteres, un número y un carácter especial (!@#$%...)</p>
+        <p class="mensaje" id="msgCuenta"></p>
+
+        <button type="button" id="btnCambiarClave">Guardar contraseña</button>
+      </div>
+    </section>
+
+  </main>
+
+  </div>
+
+
+  <!-- ========== VENTANA EMERGENTE: FOTO EN GRANDE ========== -->
+  <div class="popup" id="popupFoto" hidden>
+    <div class="caja-popup caja-foto">
+      <img id="fotoGrande" src="" alt="Foto del coral">
+      <p id="fechaFoto"></p>
+      <button type="button" class="secundario" id="btnCerrarFoto">Cerrar</button>
+    </div>
+  </div>
+
+
+  <!-- Funciones (las haremos después) -->
+  <script type="module" src="principal.js"></script>
+</body>
+</html>
+

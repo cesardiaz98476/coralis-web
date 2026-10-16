@@ -1,0 +1,770 @@
+/* ============================================================
+   estilos.css — Coralis
+   Colores tomados de las gráficas: azul marino profundo,
+   coral, turquesa y un verde alga para el toque de naturaleza.
+   ============================================================ */
+
+/* ---------- 1) COLORES (cámbialos aquí y cambian en toda la página) ---------- */
+:root {
+  --fondo: #032b3c;           /* azul océano profundo */
+  --fondo-claro: #0b3a4e;     /* tarjetas */
+  --borde: #1f5266;
+  --texto: #ffffff;
+  --texto-suave: #a7c4cf;
+  --coral: #ff6b6b;           /* temperatura / botón principal */
+  --turquesa: #6cc5c9;        /* pH / enlaces */
+  --alga: #7cc8a0;            /* verde naturaleza */
+  --error: #ff8a8a;
+  --exito: #7cc8a0;
+}
+
+/* ---------- 2) BASE ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--texto);
+  /* Fondo: luz que entra desde la superficie y se oscurece hacia el fondo marino */
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(108, 197, 201, 0.18), transparent 55%),
+    radial-gradient(ellipse at 0% 100%, rgba(124, 200, 160, 0.14), transparent 50%),
+    linear-gradient(180deg, #06384d 0%, var(--fondo) 60%, #021f2c 100%);
+  background-attachment: fixed;
+}
+
+/* Lo que tiene el atributo hidden no se ve (los popups empiezan así) */
+[hidden] {
+  display: none !important;
+}
+
+/* ---------- 3) PORTADA: DOS COLUMNAS ---------- */
+.portada {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* izquierda login | derecha info */
+  align-items: center;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+/* ---------- 4) LADO IZQUIERDO: TARJETA DE LOGIN ---------- */
+.lado-login {
+  display: flex;
+  justify-content: center;
+}
+
+.tarjeta-login {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(11, 58, 78, 0.85);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.tarjeta-login h2 {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-size: 14px;
+  color: var(--texto-suave);
+  margin-top: 6px;
+}
+
+/* ---------- 5) CAMPOS DE TEXTO ---------- */
+input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--texto);
+  background: rgba(3, 43, 60, 0.8);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder {
+  color: #6f93a0;
+}
+
+input:focus {
+  border-color: var(--turquesa);
+  box-shadow: 0 0 0 3px rgba(108, 197, 201, 0.2);
+}
+
+/* ---------- 6) BOTONES ---------- */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--coral);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.1s, filter 0.2s;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Botón gris "Volver" */
+button.secundario {
+  background: transparent;
+  color: var(--texto-suave);
+  border: 1px solid var(--borde);
+}
+
+/* Botones que parecen enlace: "Crea tu cuenta", "¿Olvidaste...?" */
+button.enlace {
+  background: none;
+  color: var(--turquesa);
+  font-weight: 500;
+  padding: 6px;
+  margin-top: 6px;
+}
+
+button.enlace:hover {
+  text-decoration: underline;
+}
+
+/* ---------- 7) MENSAJES ---------- */
+.mensaje {
+  min-height: 18px;
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--error);
+}
+
+.reglas {
+  font-size: 12px;
+  color: var(--texto-suave);
+  margin: 6px 0 0;
+}
+
+/* ---------- 8) LADO DERECHO: LOGO E INTRODUCCIÓN ---------- */
+.lado-info {
+  text-align: center;
+}
+
+.logo {
+  width: 180px;
+  max-width: 60%;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 10px 25px rgba(108, 197, 201, 0.35));
+  animation: flotar 6s ease-in-out infinite;   /* el logo "flota" como en el agua */
+}
+
+.lado-info h1 {
+  margin: 0;
+  font-size: 56px;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--turquesa), var(--alga));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lema {
+  margin: 6px 0 24px;
+  font-size: 18px;
+  color: var(--coral);
+}
+
+.introduccion {
+  max-width: 480px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--texto-suave);
+}
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ---------- 9) VENTANAS EMERGENTES (POPUPS) ---------- */
+/* Los popups empiezan ocultos; el JS les pone la clase "abierto" para mostrarlos */
+.popup {
+  position: fixed;
+  inset: 0;                         /* ocupa toda la pantalla */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background: rgba(1, 20, 30, 0.45);   /* oscurece un poco, sin tapar la página */
+  z-index: 10;
+}
+
+.caja-popup {
+  width: 100%;
+  max-width: 360px;
+  background: var(--fondo-claro);
+  border: 1px solid var(--borde);
+  border-top: 4px solid var(--alga);   /* franja verde arriba */
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: aparecer 0.25s ease-out;
+}
+
+.caja-popup h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.caja-popup p {
+  color: var(--texto-suave);
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.caja-popup input {
+  margin-bottom: 8px;
+}
+
+.popup.abierto {
+  display: flex;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 10) CELULAR: UNA SOLA COLUMNA ---------- */
+@media (max-width: 800px) {
+  .portada {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  /* En celular primero se ve el logo y la introducción, y debajo el login */
+  .lado-info {
+    order: -1;
+  }
+
+  .lado-info h1 {
+    font-size: 40px;
+  }
+
+  .logo {
+    width: 120px;
+  }
+}
+
+/* ---------- 11) BOTÓN DE OJITO EN LAS CONTRASEÑAS ---------- */
+.campo-clave {
+  
+position: relative;               /* para poder colocar el ojito encima del campo */
+}
+.caja-popup .campo-clave {
+  
+margin-bottom: 8px;
+}
+.caja-popup .campo-clave input {
+  
+margin-bottom: 0;
+}
+.campo-clave input {
+  
+padding-right: 46px;              /* deja espacio para que el texto no quede debajo del ojito */
+}
+.campo-clave .ojo {
+  
+position: absolute;
+  
+right: 6px;
+  
+top: 50%;
+  
+transform: translateY(-50%);
+  
+width: auto;
+  
+margin: 0;
+  
+padding: 6px 8px;
+  
+font-size: 16px;
+  
+background: none;
+  
+border: none;
+  
+opacity: 0.7;
+}
+.campo-clave .ojo:hover {
+  
+opacity: 1;
+  
+filter: none;
+}
+.campo-clave .ojo:active {
+  
+transform: translateY(-50%) scale(0.9);
+}
+/* ---------- 12) BARRA LATERAL (IZQUIERDA) ---------- */
+.contenedor {
+  
+display: flex;
+  
+min-height: 100vh;
+}
+.lateral {
+  
+position: sticky;                 /* se queda quieta al bajar */
+  
+top: 0;
+  
+height: 100vh;
+  
+width: 200px;                     /* barra angosta */
+  
+flex-shrink: 0;
+  
+display: flex;
+  
+flex-direction: column;
+  
+gap: 24px;
+  
+padding: 24px 16px;
+  
+background: rgba(3, 43, 60, 0.9);
+  
+border-right: 1px solid var(--borde);
+}
+.marca {
+  
+display: flex;
+  
+align-items: center;
+  
+gap: 10px;
+}
+.logo-barra {
+  
+width: 36px;
+  
+height: 36px;
+  
+object-fit: contain;
+}
+.nombre {
+  
+font-size: 22px;
+  
+font-weight: 700;
+  
+background: linear-gradient(90deg, var(--turquesa), var(--alga));
+  
+-webkit-background-clip: text;
+  
+background-clip: text;
+  
+color: transparent;
+}
+.menu {
+  
+display: flex;
+  
+flex-direction: column;           /* botones uno debajo del otro */
+  
+gap: 6px;
+}
+/* Los botones del menú no son coral como los del login */
+.pestana {
+  
+margin: 0;
+  
+padding: 10px 12px;
+  
+text-align: left;
+  
+background: transparent;
+  
+color: var(--texto-suave);
+  
+border: 1px solid transparent;
+}
+.pestana:hover {
+  
+background: rgba(255, 255, 255, 0.05);
+}
+.pestana.activa {
+  
+color: var(--texto);
+  
+border-color: var(--turquesa);
+  
+background: rgba(108, 197, 201, 0.12);
+}
+.sesion {
+  
+margin-top: auto;                 /* empuja esto hasta abajo de la barra */
+  
+display: flex;
+  
+flex-direction: column;
+  
+gap: 6px;
+}
+.usuario {
+  
+font-size: 12px;
+  
+color: var(--texto-suave);
+  
+word-break: break-all;            /* si el correo es largo, baja de línea */
+}
+.sesion button {
+  
+margin: 0;
+  
+padding: 8px;
+  
+font-size: 14px;
+}
+/* ---------- 13) CONTENIDO ---------- */
+.panel {
+  
+flex: 1;                          /* ocupa todo el espacio a la derecha */
+  
+min-width: 0;
+  
+padding: 32px;
+}
+.panel h1 {
+  
+margin: 0 0 4px;
+  
+font-size: 30px;
+}
+.estado {
+  
+margin: 0 0 24px;
+  
+font-size: 14px;
+  
+color: var(--texto-suave);
+}
+/* ---------- 14) TARJETAS DE LAS GRÁFICAS ---------- */
+.tarjetas {
+  
+display: grid;
+  
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  
+gap: 20px;
+}
+.tarjeta {
+  
+background: rgba(11, 58, 78, 0.85);
+  
+border: 1px solid var(--borde);
+  
+border-radius: 16px;
+  
+padding: 20px;
+  
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.cabeza {
+  
+display: flex;
+  
+align-items: center;
+  
+gap: 12px;
+}
+.icono {
+  
+width: 44px;
+  
+height: 44px;
+  
+display: flex;
+  
+align-items: center;
+  
+justify-content: center;
+  
+font-size: 22px;
+  
+border-radius: 50%;
+  
+background: rgba(255, 255, 255, 0.08);
+}
+.cabeza h3 {
+  
+margin: 0;
+  
+font-size: 18px;
+}
+.subtitulo {
+  
+margin: 2px 0 0;
+  
+font-size: 13px;
+  
+color: var(--texto-suave);
+}
+.valor {
+  
+margin: 16px 0 0;
+  
+font-size: 18px;
+  
+color: var(--texto-suave);
+}
+.valor span {
+  
+font-size: 40px;
+  
+font-weight: 700;
+}
+/* Cada tarjeta con su color, como en las gráficas */
+.temp .valor span { color: var(--coral); }
+.ph   .valor span { color: var(--turquesa); }
+.turb .valor span { color: var(--texto); }
+.cambio {
+  
+min-height: 18px;
+  
+margin: 4px 0 12px;
+  
+font-size: 14px;
+  
+color: var(--texto-suave);
+}
+/* Espacio de la gráfica (vacío hasta que el JS dibuje) */
+.tarjeta canvas {
+  
+width: 100%;
+  
+height: 160px;
+  
+border-radius: 10px;
+  
+background: rgba(3, 43, 60, 0.6);
+}
+/* ---------- 15) CONSULTAS POR TIEMPO ---------- */
+.filtro {
+  
+flex-direction: row;              /* los campos uno al lado del otro */
+  
+flex-wrap: wrap;
+  
+align-items: flex-end;
+  
+gap: 16px;
+  
+padding: 20px;
+  
+background: rgba(11, 58, 78, 0.85);
+  
+border: 1px solid var(--borde);
+  
+border-radius: 16px;
+}
+.filtro div {
+  
+display: flex;
+  
+flex-direction: column;
+  
+gap: 6px;
+  
+flex: 1;
+  
+min-width: 200px;
+}
+.filtro input {
+  
+color-scheme: dark;               /* el calendario sale en modo oscuro */
+}
+.filtro button {
+  
+width: auto;
+  
+margin: 0;
+  
+padding: 12px 28px;
+}
+/* Galería de fotos */
+.galeria {
+  
+display: grid;
+  
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  
+gap: 16px;
+  
+margin-top: 16px;
+}
+.galeria figure {
+  
+margin: 0;
+  
+overflow: hidden;
+  
+border: 1px solid var(--borde);
+  
+border-radius: 12px;
+  
+background: var(--fondo-claro);
+  
+cursor: pointer;
+}
+.galeria img {
+  
+width: 100%;
+  
+height: 150px;
+  
+object-fit: cover;                /* recorta la foto sin deformarla */
+  
+display: block;
+  
+transition: transform 0.3s;
+}
+.galeria figure:hover img {
+  
+transform: scale(1.05);
+}
+.galeria figcaption {
+  
+padding: 8px 10px;
+  
+font-size: 13px;
+  
+color: var(--texto-suave);
+}
+/* Popup de la foto en grande */
+.caja-foto {
+  
+max-width: 700px;
+}
+.caja-foto img {
+  
+width: 100%;
+  
+border-radius: 10px;
+}
+/* ---------- 16) CELULAR: LA BARRA PASA ARRIBA ---------- */
+@media (max-width: 800px) {
+  
+.contenedor {
+    
+flex-direction: column;
+  
+}
+  
+.lateral {
+    
+position: static;
+    
+height: auto;
+    
+width: 100%;
+    
+flex-direction: row;
+    
+flex-wrap: wrap;
+    
+align-items: center;
+    
+gap: 12px;
+    
+border-right: none;
+    
+border-bottom: 1px solid var(--borde);
+  
+}
+  
+.menu {
+    
+flex-direction: row;
+  
+}
+  
+.menu button,
+  
+.sesion button {
+    
+width: auto;
+  
+}
+  
+.sesion {
+    
+margin: 0 0 0 auto;
+  
+}
+  
+.usuario {
+    
+display: none;                  /* en celular no cabe el correo */
+  
+}
+  
+.panel {
+    
+padding: 20px 16px;
+  
+}
+}
+
+/* ---------- 17) MI CUENTA ---------- */
+.tarjeta-cuenta {
+  
+max-width: 420px;
+  
+display: flex;
+  
+flex-direction: column;
+  
+gap: 8px;
+}
+.tarjeta-cuenta h3 {
+  
+margin: 16px 0 0;
+  
+font-size: 18px;
+}
+.dato {
+  
+margin: 0;
+  
+font-size: 16px;
+  
+color: var(--turquesa);
+}
+
