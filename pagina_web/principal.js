@@ -277,7 +277,7 @@ function escucharGraficas() {
       const penultimo = datos[datos.length - 2] ?? {};
       ponerValor("valorTemp", "cambioTemp", ultimo.temp, penultimo.temp, 1);
       ponerValor("valorPh", "cambioPh", ultimo.ph, penultimo.ph, 2);
-      ponerValor("valorTurb", "cambioTurb", ultimo.turb, penultimo.turb, 2);
+      ponerValor("valorTurb", "cambioTurb", ultimo.turb, penultimo.turb, 1);
     },
     (error) => {
       document.getElementById("estadoDatos").textContent = "No se pudieron leer las gráficas (" + error.code + ")";
