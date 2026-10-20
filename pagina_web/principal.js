@@ -133,6 +133,10 @@ async function cambiarClave() {
 }
 
 document.getElementById("btnCambiarClave").addEventListener("click", cambiarClave);
+// ============================================================
+// LECTURAA DE DATOS
+// ============================================================
+
 
 
 // ============================================================
