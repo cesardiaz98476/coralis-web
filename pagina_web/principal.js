@@ -37,7 +37,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);     // la base de datos (va DESPUÉS de crear app)
 
-// Página del login (cámbiala si tu archivo se llama distinto)
 const PAGINA_LOGIN = "coralis_pag.html";
 
 
