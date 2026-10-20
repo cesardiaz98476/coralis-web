@@ -19,7 +19,7 @@ import {
   reauthenticateWithCredential,
   updatePassword,                 // cambiar la contraseña
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
 // ---------- DATOS DE TU PROYECTO (los mismos del login) ----------
@@ -52,6 +52,7 @@ onAuthStateChanged(auth, (usuario) => {
     if (!escuchando) {
       escuchando = true;
       escucharLecturas();
+      verDatosCrudos();
     }
   } else {
     window.location.replace(PAGINA_LOGIN);
@@ -170,6 +171,33 @@ function escucharLecturas() {
       estado.textContent = "No se pudieron leer los datos (" + error.code + ")";
     }
   );
+}
+
+
+// ============================================================
+// 6) VER LOS DATOS TAL CUAL LLEGAN (para revisar, sin diseño)
+// Muestra los últimos 3 datos de "lecturas" y de "mediciones",
+// y si hay un error lo escribe en la página
+// ============================================================
+function verDatosCrudos() {
+  const caja = document.getElementById("datosCrudos");
+  const resultado = {};
+
+  ["lecturas", "mediciones"].forEach((carpeta) => {
+    const ultimos = query(ref(db, carpeta), limitToLast(3));
+
+    onValue(
+      ultimos,
+      (snap) => {
+        resultado[carpeta] = snap.val() || "(vacía, todavía no hay datos)";
+        caja.textContent = JSON.stringify(resultado, null, 2);
+      },
+      (error) => {
+        resultado[carpeta] = "ERROR: " + error.code;
+        caja.textContent = JSON.stringify(resultado, null, 2);
+      }
+    );
+  });
 }
 
 
