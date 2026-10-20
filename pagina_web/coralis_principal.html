@@ -12,9 +12,10 @@
 
   <div class="contenedor">
 
+  <!-- ========== BARRA LATERAL (IZQUIERDA) ========== -->
   <aside class="lateral">
     <div class="marca">
-      <img src="coralis.png" alt="Logo de Coralis" class="logo-barra">
+      <img src="logo.png" alt="Logo de Coralis" class="logo-barra">
       <span class="nombre">Coralis</span>
     </div>
 
@@ -27,7 +28,7 @@
 
     <!-- Abajo del todo: correo y cerrar sesión -->
     <div class="sesion">
-      
+      <span class="usuario" id="correoUsuario"></span>
       <button type="button" class="secundario" id="btnSalir">Cerrar sesión</button>
     </div>
   </aside>
@@ -85,6 +86,10 @@
         </article>
 
       </div>
+
+      <!-- Datos tal cual llegan de Firebase (para revisar) -->
+      <h3>Datos recibidos</h3>
+      <pre class="crudo" id="datosCrudos">Buscando datos...</pre>
     </section>
 
 
@@ -121,8 +126,7 @@
 
       <div class="tarjeta tarjeta-cuenta">
         <label>Correo</label>
-        <span class="usuario" id="correoUsuario"></span>
-        
+        <p class="dato" id="correoCuenta"></p>
 
         <h3>Cambiar contraseña</h3>
         <label for="claveActual">Contraseña actual</label>
@@ -157,7 +161,7 @@
 
 
   <!-- Funciones (las haremos después) -->
-  <script type="module" src="principal.js"></script>
+  <script type="module" src="coralis_principal.js"></script>
 </body>
 </html>
 
