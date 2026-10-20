@@ -4,6 +4,7 @@
 //   2) Cambiar entre Inicio y Consultas
 //   3) Cerrar sesión
 //   4) Mi cuenta: ver el correo y cambiar la contraseña
+//   5) Mostrar la última lectura que llega a Firebase
 //   (las gráficas y las fotos las haremos después)
 // ============================================================
 
@@ -18,12 +19,7 @@ import {
   reauthenticateWithCredential,
   updatePassword,                 // cambiar la contraseña
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getDatabase,
-  ref,
-  onValue,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-const db = getDatabase(app);
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
 // ---------- DATOS DE TU PROYECTO (los mismos del login) ----------
@@ -37,6 +33,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getDatabase(app);     // la base de datos (va DESPUÉS de crear app)
 
 // Página del login (cámbiala si tu archivo se llama distinto)
 const PAGINA_LOGIN = "coralis_pag.html";
@@ -145,10 +142,12 @@ async function cambiarClave() {
 }
 
 document.getElementById("btnCambiarClave").addEventListener("click", cambiarClave);
+
+
 // ============================================================
 // 5) LECTURAS EN TIEMPO REAL (vienen de Firebase, escritas por el puente)
 // ============================================================
-unction escucharLecturas() {
+function escucharLecturas() {
   const estado = document.getElementById("estadoDatos");
   const ultima = ref(db, "lecturas/coralis-device/ultima");
 
@@ -172,7 +171,6 @@ unction escucharLecturas() {
     }
   );
 }
-
 
 
 // ============================================================
@@ -208,3 +206,4 @@ document.querySelectorAll('input[type="password"]').forEach((campo) => {
     ojo.title = oculta ? "Ocultar contraseña" : "Mostrar contraseña";
   });
 });
+
