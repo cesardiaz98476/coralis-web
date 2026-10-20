@@ -246,7 +246,8 @@ function escucharGraficas() {
   const graficas = {
     temp: crearGrafica("graficaTemp", "Temperatura (°C)", "#ff6b6b"),
     ph: crearGrafica("graficaPh", "pH", "#6cc5c9"),
-    turb: crearGrafica("graficaTurb", "Turbidez (V)", "#7cc8a0"),
+    turb: crearGrafica("graficaTurb", "Turbidez (NTU)", "#7cc8a0"),
+    
   };
 
   onValue(
