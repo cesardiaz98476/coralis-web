@@ -148,7 +148,8 @@ document.getElementById("btnCambiarClave").addEventListener("click", cambiarClav
 // ============================================================
 // 5) LECTURAS EN TIEMPO REAL (vienen de Firebase, escritas por el puente)
 // ============================================================
-function escucharLecturas() {
+unction escucharLecturas() {
+  const estado = document.getElementById("estadoDatos");
   const ultima = ref(db, "lecturas/coralis-device/ultima");
 
   onValue(
@@ -157,16 +158,17 @@ function escucharLecturas() {
       const d = snap.val();
       if (!d) return; // todavía no hay datos
 
-      document.getElementById("valorPh").textContent = Number(d.ph).toFixed(2);
       document.getElementById("valorTemp").textContent = Number(d.temperatura).toFixed(1);
+      document.getElementById("valorPh").textContent = Number(d.ph).toFixed(2);
       document.getElementById("valorTurb").textContent = Number(d.turbidez).toFixed(0);
-      document.getElementById("horaLectura").textContent = new Date(d.timestamp).toLocaleString(
-        "es-CO",
-        { timeZone: "America/Bogota" }
-      );
+
+      const hora = new Date(d.timestamp).toLocaleString("es-CO", {
+        timeZone: "America/Bogota",
+      });
+      estado.textContent = "Última lectura: " + hora;
     },
     (error) => {
-      console.error("No se pudo leer Firebase:", error.code);
+      estado.textContent = "No se pudieron leer los datos (" + error.code + ")";
     }
   );
 }
