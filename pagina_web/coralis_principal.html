@@ -22,7 +22,7 @@
     <!-- Menú para cambiar de sección -->
     <nav class="menu">
       <button type="button" class="pestana activa" id="btnInicio">📊 Inicio</button>
-      <button type="button" class="pestana" id="btnConsultas">🪸 Consultas</button>
+      <button type="button" class="pestana" id="btnConsultas">📅 Consultas</button>
       <button type="button" class="pestana" id="btnNosotros">🌊 Sobre nosotros</button>
       <button type="button" class="pestana" id="btnCuenta">👤 Mi cuenta</button>
     </nav>
@@ -40,70 +40,122 @@
     <!-- ========== SECCIÓN 1: INICIO (LAS GRÁFICAS) ========== -->
     <section id="inicio">
       <h1>Calidad del agua</h1>
-      <p class="estado" id="estadoDatos">Esperando datos...</p>
+      <p class="estado" id="estadoDatos">Escribe el ID del dispositivo para ver sus datos.</p>
 
-      <div class="tarjetas">
+      <!-- Paso 1: escribir el ID del dispositivo (Raspberry) -->
+      <form class="tarjeta buscar-id" id="formId">
+        <label for="idDispositivo">ID del dispositivo</label>
+        <div class="fila-id">
+          <input type="text" id="idDispositivo" placeholder="Ej: CORAL_1" autocomplete="off" required>
+          <button type="submit">Ver datos</button>
+        </div>
+        <p class="mensaje" id="msgId"></p>
+      </form>
 
-        <!-- Tarjeta de temperatura -->
-        <article class="tarjeta temp">
-          <div class="cabeza">
-            <span class="icono">🌡️</span>
-            <div>
-              <h3>Temperatura</h3>
-              <p class="subtitulo">Última lectura</p>
-            </div>
+      <!-- Paso 2: el panel con los datos (oculto hasta poner un ID válido) -->
+      <div id="panelDatos" hidden>
+
+        <!-- Franja de resumen del dispositivo -->
+        <div class="resumen">
+          <div class="dato-resumen">
+            <span class="etiqueta">Dispositivo</span>
+            <strong id="resId">--</strong>
           </div>
-          <p class="valor"><span id="valorTemp">--</span> °C</p>
-          <p class="cambio" id="cambioTemp"></p>
-          <canvas id="graficaTemp"></canvas>
-        </article>
-
-        <!-- Tarjeta de pH -->
-        <article class="tarjeta ph">
-          <div class="cabeza">
-            <span class="icono">🧪</span>
-            <div>
-              <h3>pH</h3>
-              <p class="subtitulo">Última lectura</p>
-            </div>
+          <div class="dato-resumen">
+            <span class="etiqueta">Última lectura</span>
+            <strong id="resUltima">--</strong>
           </div>
-          <p class="valor"><span id="valorPh">--</span></p>
-          <p class="cambio" id="cambioPh"></p>
-          <canvas id="graficaPh"></canvas>
-        </article>
-
-        <!-- Tarjeta de turbidez -->
-        <article class="tarjeta turb">
-          <div class="cabeza">
-            <span class="icono">🌊</span>
-            <div>
-              <h3>Turbidez</h3>
-              <p class="subtitulo">Última lectura</p>
-            </div>
+          <div class="dato-resumen">
+            <span class="etiqueta">Lecturas en el periodo</span>
+            <strong id="resCantidad">--</strong>
           </div>
-          <p class="valor"><span id="valorTurb">--</span> NTU</p>
-          <p class="cambio" id="cambioTurb"></p>
-          <canvas id="graficaTurb"></canvas>
-        </article>
+          <button type="button" class="secundario cambiar-id" id="btnCambiarId">Cambiar ID</button>
+        </div>
 
+        <!-- Botones para escoger el periodo de las gráficas -->
+        <div class="periodo">
+          <span>Ver cambio por:</span>
+          <button type="button" class="opcion activa" id="btnSemana">Semana</button>
+          <button type="button" class="opcion" id="btnMes">Mes</button>
+        </div>
+
+        <div class="tarjetas">
+
+          <!-- Tarjeta de temperatura -->
+          <article class="tarjeta temp">
+            <div class="cabeza">
+              <span class="icono">🌡️</span>
+              <div>
+                <h3>Temperatura</h3>
+                <p class="subtitulo">Última lectura</p>
+              </div>
+              <span class="chip" id="chipTemp"></span>
+            </div>
+            <p class="valor"><span id="valorTemp">--</span> °C</p>
+            <p class="cambio" id="cambioTemp"></p>
+            <canvas id="graficaTemp"></canvas>
+            <div class="mini-datos">
+              <div><span>Promedio</span><strong id="promTemp">--</strong></div>
+              <div><span>Mínimo</span><strong id="minTemp">--</strong></div>
+              <div><span>Máximo</span><strong id="maxTemp">--</strong></div>
+            </div>
+          </article>
+
+          <!-- Tarjeta de pH -->
+          <article class="tarjeta ph">
+            <div class="cabeza">
+              <span class="icono">🧪</span>
+              <div>
+                <h3>pH</h3>
+                <p class="subtitulo">Última lectura</p>
+              </div>
+              <span class="chip" id="chipPh"></span>
+            </div>
+            <p class="valor"><span id="valorPh">--</span></p>
+            <p class="cambio" id="cambioPh"></p>
+            <canvas id="graficaPh"></canvas>
+            <div class="mini-datos">
+              <div><span>Promedio</span><strong id="promPh">--</strong></div>
+              <div><span>Mínimo</span><strong id="minPh">--</strong></div>
+              <div><span>Máximo</span><strong id="maxPh">--</strong></div>
+            </div>
+          </article>
+
+          <!-- Tarjeta de turbidez -->
+          <article class="tarjeta turb">
+            <div class="cabeza">
+              <span class="icono">🌊</span>
+              <div>
+                <h3>Turbidez</h3>
+                <p class="subtitulo">Última lectura</p>
+              </div>
+              <span class="chip" id="chipTurb"></span>
+            </div>
+            <p class="valor"><span id="valorTurb">--</span> NTU</p>
+            <p class="cambio" id="cambioTurb"></p>
+            <canvas id="graficaTurb"></canvas>
+            <div class="mini-datos">
+              <div><span>Promedio</span><strong id="promTurb">--</strong></div>
+              <div><span>Mínimo</span><strong id="minTurb">--</strong></div>
+              <div><span>Máximo</span><strong id="maxTurb">--</strong></div>
+            </div>
+          </article>
+
+        </div>
+        <p class="nota">Cada punto de la gráfica es el promedio de ese día. Los rangos de "Normal" son de referencia para arrecifes de coral.</p>
       </div>
     </section>
 
 
-    <!-- ========== SECCIÓN 2: CONSULTAS POR TIEMPO (FOTOS DE CORALES) ========== -->
+    <!-- ========== SECCIÓN 2: CONSULTAS (DATOS DE UN DÍA) ========== -->
     <section id="consultas" hidden>
-      <h1>Consultas por tiempo</h1>
-      <p class="estado">Elige un rango de fechas para ver las fotos de los corales.</p>
+      <h1>Consultas por día</h1>
+      <p class="estado" id="estadoConsulta">Elige un día para ver todas las lecturas que mandó la Raspberry.</p>
 
       <form class="filtro" id="formConsulta">
         <div>
-          <label for="fechaDesde">Desde</label>
-          <input type="datetime-local" id="fechaDesde" required>
-        </div>
-
-        <div>
-          <label for="fechaHasta">Hasta</label>
-          <input type="datetime-local" id="fechaHasta" required>
+          <label for="fechaConsulta">Día</label>
+          <input type="date" id="fechaConsulta" required>
         </div>
 
         <button type="submit" id="btnConsultar">Consultar</button>
@@ -111,8 +163,20 @@
 
       <p class="mensaje" id="msgConsulta"></p>
 
-      <!-- Aquí el JS pone las fotos que encuentre -->
-      <div class="galeria" id="galeriaCorales"></div>
+      <!-- Aquí el JS pone la tabla con las lecturas de ese día -->
+      <div class="tarjeta tabla-caja" id="cajaTabla" hidden>
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Hora de la toma (timestamp)</th>
+              <th>Temperatura (°C)</th>
+              <th>pH</th>
+              <th>Turbidez (NTU)</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTabla"></tbody>
+        </table>
+      </div>
     </section>
 
 
@@ -230,18 +294,7 @@
   </div>
 
 
-  <!-- ========== VENTANA EMERGENTE: FOTO EN GRANDE ========== -->
-  <div class="popup" id="popupFoto" hidden>
-    <div class="caja-popup caja-foto">
-      <img id="fotoGrande" src="" alt="Foto del coral">
-      <p id="fechaFoto"></p>
-      <button type="button" class="secundario" id="btnCerrarFoto">Cerrar</button>
-    </div>
-  </div>
-
-
-  <!-- Funciones (las haremos después) -->
+  <!-- Toda la lógica de la página -->
   <script type="module" src="principal.js"></script>
 </body>
 </html>
-
