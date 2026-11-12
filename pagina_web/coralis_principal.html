@@ -75,6 +75,26 @@
           <button type="button" class="secundario cambiar-id" id="btnCambiarId">Cambiar ID</button>
         </div>
 
+        <!-- Tarjeta grande del coral: cambia de color según los datos -->
+        <div class="tarjeta salud" id="tarjetaSalud">
+          <div class="coral"></div>
+          <div class="salud-texto">
+            <span class="etiqueta">Salud del coral</span>
+            <h2 id="saludTitulo">--</h2>
+            <p id="saludDetalle"></p>
+            <ul class="indicadores">
+              <li id="indTemp">Temperatura</li>
+              <li id="indPh">pH</li>
+              <li id="indTurb">Turbidez</li>
+            </ul>
+            <p class="leyenda">
+              <span class="muestra sano"></span> Saludable
+              <span class="muestra riesgo"></span> En riesgo
+              <span class="muestra blanqueado"></span> Blanqueado
+            </p>
+          </div>
+        </div>
+
         <!-- Botones para escoger el periodo de las gráficas -->
         <div class="periodo">
           <span>Ver cambio por:</span>
@@ -145,40 +165,95 @@
           </article>
 
         </div>
-        <p class="nota">Cada punto de la gráfica es el promedio de ese día. Los rangos de "Normal" son de referencia para arrecifes de coral.</p>
+        <p class="nota">Cada punto de la gráfica es el promedio de ese día. Los rangos de "Normal" son de referencia para arrecifes de coral (temperatura 23–29 °C, pH 7.8–8.5, turbidez hasta 5 NTU).</p>
       </div>
     </section>
 
 
-    <!-- ========== SECCIÓN 2: CONSULTAS (DATOS DE UN DÍA) ========== -->
+    <!-- ========== SECCIÓN 2: CONSULTAS (TODO SOBRE UN DÍA) ========== -->
     <section id="consultas" hidden>
       <h1>Consultas por día</h1>
       <p class="estado" id="estadoConsulta">Elige un día para ver todas las lecturas que mandó la Raspberry.</p>
 
+      <!-- Escoger el día: flechas para moverse entre días con datos -->
       <form class="filtro" id="formConsulta">
+        <button type="button" class="secundario flecha" id="btnDiaAnterior" title="Día anterior con datos">◀</button>
         <div>
           <label for="fechaConsulta">Día</label>
           <input type="date" id="fechaConsulta" required>
         </div>
-
+        <button type="button" class="secundario flecha" id="btnDiaSiguiente" title="Día siguiente con datos">▶</button>
         <button type="submit" id="btnConsultar">Consultar</button>
       </form>
 
       <p class="mensaje" id="msgConsulta"></p>
 
-      <!-- Aquí el JS pone la tabla con las lecturas de ese día -->
-      <div class="tarjeta tabla-caja" id="cajaTabla" hidden>
-        <table class="tabla">
-          <thead>
-            <tr>
-              <th>Hora de la toma (timestamp)</th>
-              <th>Temperatura (°C)</th>
-              <th>pH</th>
-              <th>Turbidez (NTU)</th>
-            </tr>
-          </thead>
-          <tbody id="cuerpoTabla"></tbody>
-        </table>
+      <!-- Todo lo del día (oculto hasta que haya datos) -->
+      <div id="resultadoDia" hidden>
+
+        <!-- Resumen del día -->
+        <div class="resumen-dia">
+          <div class="tarjeta mini-coral" id="saludDia">
+            <div class="coral"></div>
+            <div>
+              <span class="etiqueta">El coral ese día</span>
+              <strong id="saludDiaTexto">--</strong>
+            </div>
+          </div>
+          <div class="tarjeta dato-dia">
+            <span class="etiqueta">🕒 Lecturas</span>
+            <strong id="diaCantidad">--</strong>
+            <small id="diaRango"></small>
+          </div>
+          <div class="tarjeta dato-dia temp">
+            <span class="etiqueta">🌡️ Temperatura</span>
+            <strong id="diaTemp">--</strong>
+            <small id="diaTempRango"></small>
+          </div>
+          <div class="tarjeta dato-dia ph">
+            <span class="etiqueta">🧪 pH</span>
+            <strong id="diaPh">--</strong>
+            <small id="diaPhRango"></small>
+          </div>
+          <div class="tarjeta dato-dia turb">
+            <span class="etiqueta">🌊 Turbidez</span>
+            <strong id="diaTurb">--</strong>
+            <small id="diaTurbRango"></small>
+          </div>
+        </div>
+
+        <!-- Gráfica del día, hora por hora -->
+        <div class="tarjeta grafica-dia">
+          <div class="cabeza-caja">
+            <h3>Durante el día</h3>
+            <div class="periodo">
+              <button type="button" class="opcion activa" id="btnVerTemp">Temperatura</button>
+              <button type="button" class="opcion" id="btnVerPh">pH</button>
+              <button type="button" class="opcion" id="btnVerTurb">Turbidez</button>
+            </div>
+          </div>
+          <canvas id="graficaDia"></canvas>
+        </div>
+
+        <!-- Tabla con cada lectura y su hora exacta -->
+        <div class="tarjeta tabla-caja">
+          <div class="cabeza-caja">
+            <h3>Lecturas de la Raspberry</h3>
+            <button type="button" class="secundario descargar" id="btnDescargar">⬇ Descargar CSV</button>
+          </div>
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Hora de la toma (timestamp)</th>
+                <th>Temperatura (°C)</th>
+                <th>pH</th>
+                <th>Turbidez (NTU)</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTabla"></tbody>
+          </table>
+          <p class="nota">Los valores en rojo están fuera del rango sano para los corales.</p>
+        </div>
       </div>
     </section>
 
@@ -301,3 +376,4 @@
   <script type="module" src="principal.js"></script>
 </body>
 </html>
+
