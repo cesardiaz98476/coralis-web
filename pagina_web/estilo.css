@@ -1,31 +1,53 @@
 /* ============================================================
-   estilos.css — Coralis
+   estilo.css — Coralis
+   Un solo archivo de estilos para las DOS páginas (login y principal).
    Colores tomados de las gráficas: azul marino profundo,
-   coral, turquesa y un verde alga para el toque de naturaleza.
+   coral, turquesa y un verde alga.
+
+   Recordatorio rápido:
+   - .nombre  = clase (en el HTML: class="nombre")
+   - #nombre  = id    (en el HTML: id="nombre")
+   - etiqueta = todas las de ese tipo (button, input, label...)
+   - padding = espacio por dentro, margin = espacio por fuera
+
+   Partes:
+    1) Colores               7) Barra lateral
+    2) Base                  8) Contenido y tarjetas
+    3) Formularios           9) Inicio: ID, resumen, periodo, gráficas
+    4) Botones              10) Consultas: tabla del día
+    5) Login                11) Sobre nosotros
+    6) Ventanas emergentes  12) Mi cuenta
+                            13) Animaciones
+                            14) Celular
    ============================================================ */
 
+
 /* ---------- 1) COLORES (cámbialos aquí y cambian en toda la página) ---------- */
+/* :root guarda variables; se usan así: color: var(--coral); */
 :root {
   --fondo: #032b3c;           /* azul océano profundo */
   --fondo-claro: #0b3a4e;     /* tarjetas */
+  --fondo-oscuro: rgba(3, 43, 60, 0.8);   /* campos y cajitas */
+  --tarjeta: rgba(11, 58, 78, 0.85);      /* fondo de las tarjetas */
   --borde: #1f5266;
   --texto: #ffffff;
   --texto-suave: #a7c4cf;
   --coral: #ff6b6b;           /* temperatura / botón principal */
   --turquesa: #6cc5c9;        /* pH / enlaces */
-  --alga: #7cc8a0;            /* verde naturaleza */
+  --alga: #7cc8a0;            /* turbidez / verde naturaleza */
   --error: #ff8a8a;
-  --exito: #7cc8a0;
 }
 
+
 /* ---------- 2) BASE ---------- */
+/* border-box hace que el ancho incluya el padding y el borde */
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100vh;                /* 100vh = alto completo de la pantalla */
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--texto);
   /* Fondo: luz que entra desde la superficie y se oscurece hacia el fondo marino */
@@ -33,48 +55,17 @@ body {
     radial-gradient(ellipse at 80% 0%, rgba(108, 197, 201, 0.18), transparent 55%),
     radial-gradient(ellipse at 0% 100%, rgba(124, 200, 160, 0.14), transparent 50%),
     linear-gradient(180deg, #06384d 0%, var(--fondo) 60%, #021f2c 100%);
-  background-attachment: fixed;
+  background-attachment: fixed;     /* el fondo no se mueve al bajar */
 }
 
-/* Lo que tiene el atributo hidden no se ve (los popups empiezan así) */
+/* Lo que tiene el atributo hidden no se ve (secciones y popups ocultos) */
 [hidden] {
   display: none !important;
 }
 
-/* ---------- 3) PORTADA: DOS COLUMNAS ---------- */
-.portada {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;   /* izquierda login | derecha info */
-  align-items: center;
-  gap: 48px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 32px;
-}
 
-/* ---------- 4) LADO IZQUIERDO: TARJETA DE LOGIN ---------- */
-.lado-login {
-  display: flex;
-  justify-content: center;
-}
-
-.tarjeta-login {
-  width: 100%;
-  max-width: 380px;
-  background: rgba(11, 58, 78, 0.85);
-  border: 1px solid var(--borde);
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(6px);
-}
-
-.tarjeta-login h2 {
-  margin: 0 0 20px;
-  font-size: 24px;
-}
-
+/* ---------- 3) FORMULARIOS ---------- */
+/* Los campos del formulario quedan uno debajo del otro */
 form {
   display: flex;
   flex-direction: column;
@@ -87,16 +78,15 @@ label {
   margin-top: 6px;
 }
 
-/* ---------- 5) CAMPOS DE TEXTO ---------- */
 input {
   width: 100%;
   padding: 12px 14px;
   font-size: 15px;
   color: var(--texto);
-  background: rgba(3, 43, 60, 0.8);
+  background: var(--fondo-oscuro);
   border: 1px solid var(--borde);
   border-radius: 10px;
-  outline: none;
+  outline: none;                    /* quita el borde azul por defecto del navegador */
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -104,12 +94,61 @@ input::placeholder {
   color: #6f93a0;
 }
 
+/* :focus = cuando el campo está seleccionado (escribiendo en él) */
 input:focus {
   border-color: var(--turquesa);
   box-shadow: 0 0 0 3px rgba(108, 197, 201, 0.2);
 }
 
-/* ---------- 6) BOTONES ---------- */
+/* Avisos de error/éxito que escribe el JS (por defecto en rojo) */
+.mensaje {
+  min-height: 18px;
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--error);
+}
+
+.reglas {
+  font-size: 12px;
+  color: var(--texto-suave);
+  margin: 6px 0 0;
+}
+
+/* Ojito de las contraseñas: el JS crea la caja .campo-clave alrededor de cada campo */
+.campo-clave {
+  position: relative;               /* para poder colocar el ojito encima del campo */
+}
+
+.campo-clave input {
+  padding-right: 46px;              /* deja espacio para que el texto no quede debajo del ojito */
+}
+
+.campo-clave .ojo {
+  position: absolute;               /* encima del campo, a la derecha y centrado en vertical */
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  margin: 0;
+  padding: 6px 8px;
+  font-size: 16px;
+  background: none;
+  border: none;
+  opacity: 0.7;
+}
+
+.campo-clave .ojo:hover {
+  opacity: 1;
+  filter: none;
+}
+
+.campo-clave .ojo:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+
+/* ---------- 4) BOTONES ---------- */
+/* Botón principal: coral y a todo el ancho */
 button {
   width: 100%;
   padding: 12px;
@@ -120,19 +159,21 @@ button {
   background: var(--coral);
   border: none;
   border-radius: 10px;
-  cursor: pointer;
+  cursor: pointer;                  /* manito al pasar el mouse */
   transition: transform 0.1s, filter 0.2s;
 }
 
+/* :hover = mouse encima → se aclara un poco */
 button:hover {
   filter: brightness(1.08);
 }
 
+/* :active = mientras se presiona → se encoge un poquito */
 button:active {
   transform: scale(0.98);
 }
 
-/* Botón gris "Volver" */
+/* Botón sin relleno: "Volver", "Cerrar sesión", "Cambiar ID" */
 button.secundario {
   background: transparent;
   color: var(--texto-suave);
@@ -152,21 +193,41 @@ button.enlace:hover {
   text-decoration: underline;
 }
 
-/* ---------- 7) MENSAJES ---------- */
-.mensaje {
-  min-height: 18px;
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: var(--error);
+
+/* ---------- 5) LOGIN (coralis_pag.html) ---------- */
+/* Pantalla en 2 columnas iguales: izquierda login | derecha logo e info */
+.portada {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px;
 }
 
-.reglas {
-  font-size: 12px;
-  color: var(--texto-suave);
-  margin: 6px 0 0;
+.lado-login {
+  display: flex;
+  justify-content: center;
 }
 
-/* ---------- 8) LADO DERECHO: LOGO E INTRODUCCIÓN ---------- */
+.tarjeta-login {
+  width: 100%;
+  max-width: 380px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);   /* sombra para que "flote" */
+  backdrop-filter: blur(6px);                    /* desenfoca lo de atrás (efecto vidrio) */
+}
+
+.tarjeta-login h2 {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
 .lado-info {
   text-align: center;
 }
@@ -179,14 +240,19 @@ button.enlace:hover {
   animation: flotar 6s ease-in-out infinite;   /* el logo "flota" como en el agua */
 }
 
-.lado-info h1 {
-  margin: 0;
-  font-size: 56px;
-  letter-spacing: 2px;
+/* Texto con degradado: el fondo de colores se "recorta" con la forma de las letras */
+.lado-info h1,
+.nombre {
   background: linear-gradient(90deg, var(--turquesa), var(--alga));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.lado-info h1 {
+  margin: 0;
+  font-size: 56px;
+  letter-spacing: 2px;
 }
 
 .lema {
@@ -203,13 +269,9 @@ button.enlace:hover {
   color: var(--texto-suave);
 }
 
-@keyframes flotar {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
-}
 
-/* ---------- 9) VENTANAS EMERGENTES (POPUPS) ---------- */
-/* Los popups empiezan ocultos; el JS les pone la clase "abierto" para mostrarlos */
+/* ---------- 6) VENTANAS EMERGENTES (POPUPS DEL LOGIN) ---------- */
+/* Empiezan ocultas; el JS les pone la clase "abierto" para mostrarlas */
 .popup {
   position: fixed;
   inset: 0;                         /* ocupa toda la pantalla */
@@ -218,7 +280,11 @@ button.enlace:hover {
   align-items: center;
   padding: 16px;
   background: rgba(1, 20, 30, 0.45);   /* oscurece un poco, sin tapar la página */
-  z-index: 10;
+  z-index: 10;                      /* queda por encima de todo lo demás */
+}
+
+.popup.abierto {
+  display: flex;
 }
 
 .caja-popup {
@@ -230,7 +296,7 @@ button.enlace:hover {
   border-radius: 16px;
   padding: 28px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  animation: aparecer 0.25s ease-out;
+  animation: aparecer 0.25s ease-out;  /* entra con un pequeño movimiento */
 }
 
 .caja-popup h3 {
@@ -244,685 +310,198 @@ button.enlace:hover {
   margin: 0 0 12px;
 }
 
-.caja-popup input {
+.caja-popup input,
+.caja-popup .campo-clave {
   margin-bottom: 8px;
 }
 
-.popup.abierto {
-  display: flex;
-}
-
-@keyframes aparecer {
-  from { opacity: 0; transform: translateY(15px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ---------- 10) CELULAR: UNA SOLA COLUMNA ---------- */
-@media (max-width: 800px) {
-  .portada {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 24px 16px;
-  }
-
-  /* En celular primero se ve el logo y la introducción, y debajo el login */
-  .lado-info {
-    order: -1;
-  }
-
-  .lado-info h1 {
-    font-size: 40px;
-  }
-
-  .logo {
-    width: 120px;
-  }
-}
-
-/* ---------- 11) BOTÓN DE OJITO EN LAS CONTRASEÑAS ---------- */
-.campo-clave {
-  
-position: relative;               /* para poder colocar el ojito encima del campo */
-}
-.caja-popup .campo-clave {
-  
-margin-bottom: 8px;
-}
 .caja-popup .campo-clave input {
-  
-margin-bottom: 0;
+  margin-bottom: 0;
 }
-.campo-clave input {
-  
-padding-right: 46px;              /* deja espacio para que el texto no quede debajo del ojito */
-}
-.campo-clave .ojo {
-  
-position: absolute;
-  
-right: 6px;
-  
-top: 50%;
-  
-transform: translateY(-50%);
-  
-width: auto;
-  
-margin: 0;
-  
-padding: 6px 8px;
-  
-font-size: 16px;
-  
-background: none;
-  
-border: none;
-  
-opacity: 0.7;
-}
-.campo-clave .ojo:hover {
-  
-opacity: 1;
-  
-filter: none;
-}
-.campo-clave .ojo:active {
-  
-transform: translateY(-50%) scale(0.9);
-}
-/* ---------- 12) BARRA LATERAL (IZQUIERDA) ---------- */
+
+
+/* ---------- 7) BARRA LATERAL (página principal) ---------- */
+/* Contenedor: barra a la izquierda y contenido a la derecha (flex = en fila) */
 .contenedor {
-  
-display: flex;
-  
-min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
 }
+
 .lateral {
-  
-position: sticky;                 /* se queda quieta al bajar */
-  
-top: 0;
-  
-height: 100vh;
-  
-width: 200px;                     /* barra angosta */
-  
-flex-shrink: 0;
-  
-display: flex;
-  
-flex-direction: column;
-  
-gap: 24px;
-  
-padding: 24px 16px;
-  
-background: rgba(3, 43, 60, 0.9);
-  
-border-right: 1px solid var(--borde);
+  position: sticky;                 /* se queda quieta al bajar */
+  top: 0;
+  height: 100vh;
+  width: 200px;                     /* barra angosta */
+  flex-shrink: 0;                   /* la barra no se aplasta */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 16px;
+  background: rgba(3, 43, 60, 0.9);
+  border-right: 1px solid var(--borde);
 }
+
 .marca {
-  
-display: flex;
-  
-align-items: center;
-  
-gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+
 .logo-barra {
-  
-width: 36px;
-  
-height: 36px;
-  
-object-fit: contain;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
+
 .nombre {
-  
-font-size: 22px;
-  
-font-weight: 700;
-  
-background: linear-gradient(90deg, var(--turquesa), var(--alga));
-  
--webkit-background-clip: text;
-  
-background-clip: text;
-  
-color: transparent;
+  font-size: 22px;
+  font-weight: 700;
 }
+
 .menu {
-  
-display: flex;
-  
-flex-direction: column;           /* botones uno debajo del otro */
-  
-gap: 6px;
+  display: flex;
+  flex-direction: column;           /* botones uno debajo del otro */
+  gap: 6px;
 }
-/* Los botones del menú no son coral como los del login */
+
+/* Los botones del menú no son coral como los demás */
 .pestana {
-  
-margin: 0;
-  
-padding: 10px 12px;
-  
-text-align: left;
-  
-background: transparent;
-  
-color: var(--texto-suave);
-  
-border: 1px solid transparent;
-}
-.pestana:hover {
-  
-background: rgba(255, 255, 255, 0.05);
-}
-.pestana.activa {
-  
-color: var(--texto);
-  
-border-color: var(--turquesa);
-  
-background: rgba(108, 197, 201, 0.12);
-}
-.sesion {
-  
-margin-top: auto;                 /* empuja esto hasta abajo de la barra */
-  
-display: flex;
-  
-flex-direction: column;
-  
-gap: 6px;
-}
-.usuario {
-  
-font-size: 12px;
-  
-color: var(--texto-suave);
-  
-word-break: break-all;            /* si el correo es largo, baja de línea */
-}
-.sesion button {
-  
-margin: 0;
-  
-padding: 8px;
-  
-font-size: 14px;
-}
-/* ---------- 13) CONTENIDO ---------- */
-.panel {
-  
-flex: 1;                          /* ocupa todo el espacio a la derecha */
-  
-min-width: 0;
-  
-padding: 32px;
-}
-.panel h1 {
-  
-margin: 0 0 4px;
-  
-font-size: 30px;
-}
-.estado {
-  
-margin: 0 0 24px;
-  
-font-size: 14px;
-  
-color: var(--texto-suave);
-}
-/* ---------- 14) TARJETAS DE LAS GRÁFICAS ---------- */
-.tarjetas {
-  
-display: grid;
-  
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  
-gap: 20px;
-}
-.tarjeta {
-  
-background: rgba(11, 58, 78, 0.85);
-  
-border: 1px solid var(--borde);
-  
-border-radius: 16px;
-  
-padding: 20px;
-  
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-.cabeza {
-  
-display: flex;
-  
-align-items: center;
-  
-gap: 12px;
-}
-.icono {
-  
-width: 44px;
-  
-height: 44px;
-  
-display: flex;
-  
-align-items: center;
-  
-justify-content: center;
-  
-font-size: 22px;
-  
-border-radius: 50%;
-  
-background: rgba(255, 255, 255, 0.08);
-}
-.cabeza h3 {
-  
-margin: 0;
-  
-font-size: 18px;
-}
-.subtitulo {
-  
-margin: 2px 0 0;
-  
-font-size: 13px;
-  
-color: var(--texto-suave);
-}
-.valor {
-  
-margin: 16px 0 0;
-  
-font-size: 18px;
-  
-color: var(--texto-suave);
-}
-.valor span {
-  
-font-size: 40px;
-  
-font-weight: 700;
-}
-/* Cada tarjeta con su color, como en las gráficas */
-.temp .valor span { color: var(--coral); }
-.ph   .valor span { color: var(--turquesa); }
-.turb .valor span { color: var(--texto); }
-.cambio {
-  
-min-height: 18px;
-  
-margin: 4px 0 12px;
-  
-font-size: 14px;
-  
-color: var(--texto-suave);
-}
-/* Espacio de la gráfica (vacío hasta que el JS dibuje) */
-.tarjeta canvas {
-  
-width: 100%;
-  
-height: 160px;
-  
-border-radius: 10px;
-  
-background: rgba(3, 43, 60, 0.6);
-}
-/* ---------- 15) CONSULTAS POR TIEMPO ---------- */
-.filtro {
-  
-flex-direction: row;              /* los campos uno al lado del otro */
-  
-flex-wrap: wrap;
-  
-align-items: flex-end;
-  
-gap: 16px;
-  
-padding: 20px;
-  
-background: rgba(11, 58, 78, 0.85);
-  
-border: 1px solid var(--borde);
-  
-border-radius: 16px;
-}
-.filtro div {
-  
-display: flex;
-  
-flex-direction: column;
-  
-gap: 6px;
-  
-flex: 1;
-  
-min-width: 200px;
-}
-.filtro input {
-  
-color-scheme: dark;               /* el calendario sale en modo oscuro */
-}
-.filtro button {
-  
-width: auto;
-  
-margin: 0;
-  
-padding: 12px 28px;
-}
-/* Galería de fotos */
-.galeria {
-  
-display: grid;
-  
-grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  
-gap: 16px;
-  
-margin-top: 16px;
-}
-.galeria figure {
-  
-margin: 0;
-  
-overflow: hidden;
-  
-border: 1px solid var(--borde);
-  
-border-radius: 12px;
-  
-background: var(--fondo-claro);
-  
-cursor: pointer;
-}
-.galeria img {
-  
-width: 100%;
-  
-height: 150px;
-  
-object-fit: cover;                /* recorta la foto sin deformarla */
-  
-display: block;
-  
-transition: transform 0.3s;
-}
-.galeria figure:hover img {
-  
-transform: scale(1.05);
-}
-.galeria figcaption {
-  
-padding: 8px 10px;
-  
-font-size: 13px;
-  
-color: var(--texto-suave);
-}
-/* Popup de la foto en grande */
-.caja-foto {
-  
-max-width: 700px;
-}
-.caja-foto img {
-  
-width: 100%;
-  
-border-radius: 10px;
-}
-/* ---------- 16) CELULAR: LA BARRA PASA ARRIBA ---------- */
-@media (max-width: 800px) {
-  
-.contenedor {
-    
-flex-direction: column;
-  
-}
-  
-.lateral {
-    
-position: static;
-    
-height: auto;
-    
-width: 100%;
-    
-flex-direction: row;
-    
-flex-wrap: wrap;
-    
-align-items: center;
-    
-gap: 12px;
-    
-border-right: none;
-    
-border-bottom: 1px solid var(--borde);
-  
-}
-  
-.menu {
-    
-flex-direction: row;
-  
-}
-  
-.menu button,
-  
-.sesion button {
-    
-width: auto;
-  
-}
-  
-.sesion {
-    
-margin: 0 0 0 auto;
-  
-}
-  
-.usuario {
-    
-display: none;                  /* en celular no cabe el correo */
-  
-}
-  
-.panel {
-    
-padding: 20px 16px;
-  
-}
-}
-
-/* ---------- 17) MI CUENTA ---------- */
-.tarjeta-cuenta {
-  
-max-width: 420px;
-  
-display: flex;
-  
-flex-direction: column;
-  
-gap: 8px;
-}
-.tarjeta-cuenta h3 {
-  
-margin: 16px 0 0;
-  
-font-size: 18px;
-}
-.dato {
-  
-margin: 0;
-  
-font-size: 16px;
-  
-color: var(--turquesa);
-}
-
-/* ---------- 18) DATOS TAL CUAL LLEGAN ---------- */
-.crudo {
-  margin: 8px 0 0;
-  padding: 16px;
-  max-height: 320px;
-  overflow: auto;
-  font-size: 12px;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: left;
+  background: transparent;
   color: var(--texto-suave);
-  background: rgba(3, 43, 60, 0.8);
-  border: 1px solid var(--borde);
-  border-radius: 12px;
-  white-space: pre-wrap;
-}
-/* ---------- 19) SOBRE NOSOTROS ---------- */
-/* Cada bloque de texto es una tarjeta, con espacio entre una y otra */
-.bloque {
-  
-margin-bottom: 20px;
-  
-max-width: 900px;
-}
-.bloque h3 {
-  
-margin: 0 0 10px;
-  
-font-size: 18px;
-  
-color: var(--turquesa);
-}
-.bloque p,
-.bloque li {
-  
-color: var(--texto-suave);
-  
-line-height: 1.7;
-}
-.bloque p {
-  
-margin: 0 0 8px;
-}
-.bloque strong {
-  
-color: var(--texto);              /* lo que está en negrita se ve en blanco */
-}
-/* El flujo de datos resaltado en una cajita */
-.flujo {
-  
-padding: 12px 16px;
-  
-border-radius: 10px;
-  
-background: rgba(3, 43, 60, 0.8);
-  
-border: 1px solid var(--borde);
-  
-color: var(--alga) !important;
-  
-font-weight: 600;
-}
-.subtitulo-seccion {
-  
-margin: 28px 0 14px;
-  
-font-size: 22px;
-}
-/* Tarjetas de los autores: tantas por fila como quepan */
-.autores {
-  
-display: grid;
-  
-grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  
-gap: 16px;
-  
-margin-bottom: 20px;
-  
-max-width: 900px;
-}
-.autor {
-  
-text-align: center;
-  
-padding: 20px;
-  
-background: rgba(11, 58, 78, 0.85);
-  
-border: 1px solid var(--borde);
-  
-border-top: 4px solid var(--coral);   /* franja coral arriba */
-  
-border-radius: 16px;
-}
-.autor h3 {
-  
-margin: 10px 0 4px;
-  
-font-size: 17px;
-}
-.autor p {
-  
-margin: 0;
-  
-font-size: 14px;
-  
-color: var(--texto-suave);
-}
-.autor .pequeno {
-  
-margin-top: 6px;
-  
-font-size: 12px;
-}
-/* Círculo con las iniciales */
-.avatar {
-  
-width: 64px;
-  
-height: 64px;
-  
-margin: 0 auto;
-  
-display: flex;
-  
-align-items: center;
-  
-justify-content: center;
-  
-border-radius: 50%;               /* 50% = círculo */
-  
-font-size: 22px;
-  
-font-weight: 700;
-  
-color: var(--fondo);
-  
-background: linear-gradient(135deg, var(--turquesa), var(--alga));
+  border: 1px solid transparent;
 }
 
-/* ============================================================
-   20) INICIO NUEVO: ID, RESUMEN, PERIODO, ESTADO Y TABLA
-   Pega todo esto AL FINAL de estilo.css
-   (va al final para que reemplace algunos estilos de arriba)
-   ============================================================ */
+.pestana:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
 
-/* ---------- Buscador del ID del dispositivo ---------- */
-.buscar-id {
-  max-width: 520px;
+/* La sección que se está viendo (el JS pone la clase "activa") */
+.pestana.activa {
+  color: var(--texto);
+  border-color: var(--turquesa);
+  background: rgba(108, 197, 201, 0.12);
+}
+
+.sesion {
+  margin-top: auto;                 /* empuja esto hasta abajo de la barra */
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border-top: 4px solid var(--turquesa);   /* franja de color arriba */
 }
 
+.usuario {
+  font-size: 12px;
+  color: var(--texto-suave);
+  word-break: break-all;            /* si el correo es largo, baja de línea */
+}
+
+.sesion button {
+  margin: 0;
+  padding: 8px;
+  font-size: 14px;
+}
+
+
+/* ---------- 8) CONTENIDO Y TARJETAS ---------- */
+.panel {
+  flex: 1;                          /* ocupa todo el espacio a la derecha */
+  min-width: 0;
+  padding: 32px;
+}
+
+/* Título y texto de arriba de cada sección, centrados */
+.panel h1 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.estado {
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* Tarjeta base: la usan las gráficas, el ID, la tabla, nosotros y cuenta */
+.tarjeta {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Círculo con el emoji (tarjetas de gráficas) */
+.icono {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border-radius: 50%;               /* 50% = círculo */
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.subtitulo {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+
+/* ---------- 9) INICIO: ID, RESUMEN, PERIODO Y GRÁFICAS ---------- */
+
+/* Cuadro para escribir el ID, centrado */
+.buscar-id {
+  max-width: 460px;
+  margin: 6vh auto 0;               /* auto a los lados = centrado */
+  padding: 36px 32px;
+  align-items: center;              /* centra todo lo de adentro */
+  gap: 6px;
+  text-align: center;
+  border-top: 4px solid var(--turquesa);
+  /* brillo turquesa suave alrededor */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 0 40px rgba(108, 197, 201, 0.15);
+}
+
+/* Círculo grande con el ícono, flota como el logo del login */
+.icono-grande {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(108, 197, 201, 0.35), rgba(124, 200, 160, 0.25));
+  border: 1px solid var(--turquesa);
+  animation: flotar 6s ease-in-out infinite;
+}
+
+.buscar-id h2 {
+  margin: 12px 0 0;
+  font-size: 24px;
+}
+
+.texto-id {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.buscar-id label {
+  align-self: flex-start;           /* la etiqueta queda a la izquierda, encima del campo */
+}
+
+/* El campo del ID y el botón en la misma fila */
 .fila-id {
-  display: flex;                    /* el campo y el botón en la misma fila */
+  width: 100%;
+  display: flex;
   gap: 10px;
 }
 
@@ -937,7 +516,7 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   white-space: nowrap;              /* el texto del botón no se parte */
 }
 
-/* ---------- Franja de resumen (dispositivo, última lectura, cantidad) ---------- */
+/* Franja de resumen: dispositivo, última lectura, cantidad */
 .resumen {
   display: flex;
   flex-wrap: wrap;                  /* en pantallas pequeñas baja de línea */
@@ -947,7 +526,6 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   margin-bottom: 16px;
   border-radius: 16px;
   border: 1px solid var(--borde);
-  /* degradado suave de turquesa a verde para que no se vea plano */
   background: linear-gradient(90deg, rgba(108, 197, 201, 0.18), rgba(124, 200, 160, 0.10));
 }
 
@@ -962,15 +540,15 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   border-right: none;
 }
 
+.dato-resumen strong {
+  font-size: 18px;
+}
+
 .etiqueta {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--texto-suave);
-}
-
-.dato-resumen strong {
-  font-size: 18px;
 }
 
 .cambiar-id {
@@ -979,37 +557,39 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   padding: 8px 16px;
 }
 
-/* ---------- Botones Semana / Mes ---------- */
+/* Botones Semana / Mes */
 .periodo {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 20px;
-  color: var(--texto-suave);
   font-size: 14px;
+  color: var(--texto-suave);
 }
 
 .opcion {
   width: auto;
   margin: 0;
   padding: 8px 20px;
-  border-radius: 999px;             /* bordes totalmente redondos (forma de pastilla) */
+  border-radius: 999px;             /* forma de pastilla */
   background: transparent;
   color: var(--texto-suave);
   border: 1px solid var(--borde);
 }
 
-/* El botón del periodo escogido se pinta de turquesa */
+/* El periodo escogido se pinta de turquesa */
 .opcion.activa {
   background: var(--turquesa);
   color: var(--fondo);
   border-color: var(--turquesa);
 }
 
-/* ---------- Tarjetas con más vida ---------- */
-.tarjeta.temp { border-top: 4px solid var(--coral); }
-.tarjeta.ph   { border-top: 4px solid var(--turquesa); }
-.tarjeta.turb { border-top: 4px solid var(--alga); }
+/* Tarjetas de las gráficas: tantas por fila como quepan, de mínimo 300px */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
 
 .tarjetas .tarjeta {
   transition: transform 0.2s, box-shadow 0.2s;
@@ -1021,11 +601,49 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
+/* Cada tarjeta con su color: franja de arriba y número grande */
+.temp { border-top: 4px solid var(--coral); }
+.ph   { border-top: 4px solid var(--turquesa); }
+.turb { border-top: 4px solid var(--alga); }
+
+.temp .valor span { color: var(--coral); }
+.ph   .valor span { color: var(--turquesa); }
 .turb .valor span { color: var(--alga); }
 
-/* ---------- Etiqueta de estado (Normal / Fuera de rango) ---------- */
+.cabeza {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cabeza h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.valor {
+  margin: 16px 0 0;
+  font-size: 18px;
+  color: var(--texto-suave);
+}
+
+/* El número grande */
+.valor span {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+/* La flechita ▲▼ con cuánto cambió */
+.cambio {
+  min-height: 18px;
+  margin: 4px 0 12px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+/* Etiqueta de estado: Normal (verde) / Fuera de rango (rojo) */
 .chip {
-  margin-left: auto;                /* la empuja a la derecha de la cabeza de la tarjeta */
+  margin-left: auto;                /* la empuja a la derecha */
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
@@ -1048,10 +666,18 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   border: 1px solid var(--error);
 }
 
-/* ---------- Promedio, mínimo y máximo debajo de cada gráfica ---------- */
+/* Espacio de la gráfica (canvas = lienzo donde Chart.js dibuja) */
+.tarjeta canvas {
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
+  background: rgba(3, 43, 60, 0.6);
+}
+
+/* Promedio, mínimo y máximo debajo de cada gráfica (3 columnas) */
 .mini-datos {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);   /* 3 columnas iguales */
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 12px;
 }
@@ -1080,9 +706,50 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   color: var(--texto-suave);
 }
 
-/* ---------- Consultas: tabla de lecturas del día ---------- */
+
+/* ---------- 10) CONSULTAS: TABLA DEL DÍA ---------- */
+/* Buscador del día, centrado, con el campo y el botón en fila */
+.filtro {
+  max-width: 640px;
+  margin: 0 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 20px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+}
+
+.filtro div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtro input {
+  color-scheme: dark;               /* el calendario sale en modo oscuro */
+}
+
+.filtro button {
+  width: auto;
+  margin: 0;
+  padding: 12px 28px;
+}
+
+/* Mensajes centrados (ID, consulta y cuenta) */
+.buscar-id .mensaje,
+#msgConsulta,
+#msgCuenta {
+  text-align: center;
+}
+
 .tabla-caja {
-  margin-top: 16px;
+  max-width: 900px;
+  margin: 16px auto 0;
   padding: 0;
   overflow-x: auto;                 /* en celular la tabla se puede mover de lado */
 }
@@ -1123,8 +790,205 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
   font-weight: 600;
 }
 
-/* ---------- Celular ---------- */
+
+/* ---------- 11) SOBRE NOSOTROS ---------- */
+/* Cada bloque de texto es una tarjeta centrada */
+.bloque {
+  max-width: 900px;
+  margin: 0 auto 20px;
+}
+
+.bloque h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--turquesa);
+}
+
+.bloque p,
+.bloque li {
+  color: var(--texto-suave);
+  line-height: 1.7;
+}
+
+.bloque p {
+  margin: 0 0 8px;
+}
+
+.bloque strong {
+  color: var(--texto);              /* lo que está en negrita se ve en blanco */
+}
+
+/* El flujo de datos resaltado en una cajita */
+.bloque .flujo {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--fondo-oscuro);
+  border: 1px solid var(--borde);
+  color: var(--alga);
+  font-weight: 600;
+}
+
+.subtitulo-seccion {
+  margin: 28px 0 14px;
+  font-size: 22px;
+  text-align: center;
+}
+
+/* Tarjetas de los autores: tantas por fila como quepan */
+.autores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto 20px;
+}
+
+.autor {
+  text-align: center;
+  padding: 20px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-top: 4px solid var(--coral);   /* franja coral arriba */
+  border-radius: 16px;
+}
+
+.autor h3 {
+  margin: 10px 0 4px;
+  font-size: 17px;
+}
+
+.autor p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.autor .pequeno {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+/* Círculo con las iniciales */
+.avatar {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fondo);
+  background: linear-gradient(135deg, var(--turquesa), var(--alga));
+}
+
+
+/* ---------- 12) MI CUENTA ---------- */
+/* Tarjeta centrada con los campos uno debajo del otro */
+.tarjeta-cuenta {
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tarjeta-cuenta h3 {
+  margin: 16px 0 0;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* El título "Correo" y el correo, centrados */
+.tarjeta-cuenta > label:first-child,
+.dato {
+  text-align: center;
+}
+
+.dato {
+  margin: 0;
+  font-size: 16px;
+  color: var(--turquesa);
+}
+
+
+/* ---------- 13) ANIMACIONES ---------- */
+/* Sube 10px a la mitad y vuelve (logo del login e ícono del ID) */
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* Los popups entran desde un poco abajo, de invisibles a visibles */
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ---------- 14) CELULAR (pantallas de 800px o menos) ---------- */
+/* @media: estas reglas solo aplican en pantallas pequeñas (responsive) */
 @media (max-width: 800px) {
+
+  /* Login: una sola columna, primero el logo y debajo el login */
+  .portada {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  .lado-info {
+    order: -1;
+  }
+
+  .lado-info h1 {
+    font-size: 40px;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  /* Página principal: la barra lateral pasa arriba */
+  .contenedor {
+    flex-direction: column;
+  }
+
+  .lateral {
+    position: static;
+    height: auto;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .menu {
+    flex-direction: row;
+  }
+
+  .menu button,
+  .sesion button {
+    width: auto;
+  }
+
+  .sesion {
+    margin: 0 0 0 auto;
+  }
+
+  .usuario {
+    display: none;                  /* en celular no cabe el correo */
+  }
+
+  .panel {
+    padding: 20px 16px;
+  }
+
+  /* El campo del ID y sus botones uno debajo del otro */
   .fila-id {
     flex-direction: column;
   }
@@ -1139,7 +1003,6 @@ background: linear-gradient(135deg, var(--turquesa), var(--alga));
     border-right: none;
   }
 }
-
 
 
 
