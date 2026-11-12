@@ -781,5 +781,130 @@ color: var(--turquesa);
   border-radius: 12px;
   white-space: pre-wrap;
 }
+/* ---------- 19) SOBRE NOSOTROS ---------- */
+/* Cada bloque de texto es una tarjeta, con espacio entre una y otra */
+.bloque {
+  
+margin-bottom: 20px;
+  
+max-width: 900px;
+}
+.bloque h3 {
+  
+margin: 0 0 10px;
+  
+font-size: 18px;
+  
+color: var(--turquesa);
+}
+.bloque p,
+.bloque li {
+  
+color: var(--texto-suave);
+  
+line-height: 1.7;
+}
+.bloque p {
+  
+margin: 0 0 8px;
+}
+.bloque strong {
+  
+color: var(--texto);              /* lo que está en negrita se ve en blanco */
+}
+/* El flujo de datos resaltado en una cajita */
+.flujo {
+  
+padding: 12px 16px;
+  
+border-radius: 10px;
+  
+background: rgba(3, 43, 60, 0.8);
+  
+border: 1px solid var(--borde);
+  
+color: var(--alga) !important;
+  
+font-weight: 600;
+}
+.subtitulo-seccion {
+  
+margin: 28px 0 14px;
+  
+font-size: 22px;
+}
+/* Tarjetas de los autores: tantas por fila como quepan */
+.autores {
+  
+display: grid;
+  
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  
+gap: 16px;
+  
+margin-bottom: 20px;
+  
+max-width: 900px;
+}
+.autor {
+  
+text-align: center;
+  
+padding: 20px;
+  
+background: rgba(11, 58, 78, 0.85);
+  
+border: 1px solid var(--borde);
+  
+border-top: 4px solid var(--coral);   /* franja coral arriba */
+  
+border-radius: 16px;
+}
+.autor h3 {
+  
+margin: 10px 0 4px;
+  
+font-size: 17px;
+}
+.autor p {
+  
+margin: 0;
+  
+font-size: 14px;
+  
+color: var(--texto-suave);
+}
+.autor .pequeno {
+  
+margin-top: 6px;
+  
+font-size: 12px;
+}
+/* Círculo con las iniciales */
+.avatar {
+  
+width: 64px;
+  
+height: 64px;
+  
+margin: 0 auto;
+  
+display: flex;
+  
+align-items: center;
+  
+justify-content: center;
+  
+border-radius: 50%;               /* 50% = círculo */
+  
+font-size: 22px;
+  
+font-weight: 700;
+  
+color: var(--fondo);
+  
+background: linear-gradient(135deg, var(--turquesa), var(--alga));
+}
+
 
 
