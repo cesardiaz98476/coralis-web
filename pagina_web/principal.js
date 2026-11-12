@@ -69,6 +69,7 @@ const SECCIONES = {
   inicio: "btnInicio",
   consultas: "btnConsultas",
   cuenta: "btnCuenta",
+  cuenta: "btnCuenta",
 };
 
 function mostrarSeccion(elegida) {
@@ -82,7 +83,9 @@ function mostrarSeccion(elegida) {
 
 document.getElementById("btnInicio").addEventListener("click", () => mostrarSeccion("inicio"));
 document.getElementById("btnConsultas").addEventListener("click", () => mostrarSeccion("consultas"));
+document.getElementById("btnNosotros").addEventListener("click", () => mostrarSeccion("nosotros"));
 document.getElementById("btnCuenta").addEventListener("click", () => mostrarSeccion("cuenta"));
+
 
 
 // ============================================================
