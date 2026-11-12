@@ -1,8 +1,8 @@
 /* ============================================================
    estilo.css — Coralis
    Un solo archivo de estilos para las DOS páginas (login y principal).
-   Colores tomados de las gráficas: azul marino profundo,
-   coral, turquesa y un verde alga.
+   Tema claro tipo "agua de mar": fondo aguamarina clarito, tarjetas
+   blancas y colores vivos (coral, turquesa y verde alga).
 
    Recordatorio rápido:
    - .nombre  = clase (en el HTML: class="nombre")
@@ -17,25 +17,30 @@
     4) Botones              10) Consultas: tabla del día
     5) Login                11) Sobre nosotros
     6) Ventanas emergentes  12) Mi cuenta
-                            13) Animaciones
-                            14) Celular
+                            13) Coral de salud
+                            14) Consultas: resumen del día
+                            15) Animaciones
+                            16) Celular
    ============================================================ */
 
 
 /* ---------- 1) COLORES (cámbialos aquí y cambian en toda la página) ---------- */
 /* :root guarda variables; se usan así: color: var(--coral); */
 :root {
-  --fondo: #032b3c;           /* azul océano profundo */
-  --fondo-claro: #0b3a4e;     /* tarjetas */
-  --fondo-oscuro: rgba(3, 43, 60, 0.8);   /* campos y cajitas */
-  --tarjeta: rgba(11, 58, 78, 0.85);      /* fondo de las tarjetas */
-  --borde: #1f5266;
-  --texto: #ffffff;
-  --texto-suave: #a7c4cf;
+  --fondo: #e6f6f8;           /* aguamarina muy clarito */
+  --fondo-claro: #ffffff;     /* ventanas emergentes */
+  --fondo-oscuro: #f1f9fa;    /* campos y cajitas (un poco más oscuro que blanco) */
+  --tarjeta: rgba(255, 255, 255, 0.88);   /* fondo de las tarjetas */
+  --borde: #cde6eb;
+  --texto: #0d3b4c;           /* azul marino para leer bien */
+  --texto-suave: #557a87;
   --coral: #ff6b6b;           /* temperatura / botón principal */
-  --turquesa: #6cc5c9;        /* pH / enlaces */
-  --alga: #7cc8a0;            /* turbidez / verde naturaleza */
-  --error: #ff8a8a;
+  --turquesa: #1fa8b0;        /* pH / enlaces */
+  --alga: #2fae7a;            /* turbidez / verde naturaleza */
+  --error: #e5484d;
+  --mar: #0e7c8c;             /* azul verdoso de la barra lateral */
+  --mar-oscuro: #0a5a73;
+  --sombra: 0 10px 30px rgba(13, 59, 76, 0.10);   /* sombra suave */
 }
 
 
@@ -50,11 +55,12 @@ body {
   min-height: 100vh;                /* 100vh = alto completo de la pantalla */
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--texto);
-  /* Fondo: luz que entra desde la superficie y se oscurece hacia el fondo marino */
+  /* Fondo: agua clarita con manchas de luz turquesa, coral y verde */
   background:
-    radial-gradient(ellipse at 80% 0%, rgba(108, 197, 201, 0.18), transparent 55%),
-    radial-gradient(ellipse at 0% 100%, rgba(124, 200, 160, 0.14), transparent 50%),
-    linear-gradient(180deg, #06384d 0%, var(--fondo) 60%, #021f2c 100%);
+    radial-gradient(ellipse at 85% 0%, rgba(31, 168, 176, 0.22), transparent 55%),
+    radial-gradient(ellipse at 10% 100%, rgba(47, 174, 122, 0.16), transparent 50%),
+    radial-gradient(ellipse at 100% 90%, rgba(255, 107, 107, 0.10), transparent 45%),
+    linear-gradient(180deg, #d4f1f4 0%, var(--fondo) 50%, #f6fcfd 100%);
   background-attachment: fixed;     /* el fondo no se mueve al bajar */
 }
 
@@ -91,13 +97,13 @@ input {
 }
 
 input::placeholder {
-  color: #6f93a0;
+  color: #94b3bc;
 }
 
 /* :focus = cuando el campo está seleccionado (escribiendo en él) */
 input:focus {
   border-color: var(--turquesa);
-  box-shadow: 0 0 0 3px rgba(108, 197, 201, 0.2);
+  box-shadow: 0 0 0 3px rgba(31, 168, 176, 0.2);
 }
 
 /* Avisos de error/éxito que escribe el JS (por defecto en rojo) */
@@ -219,7 +225,7 @@ button.enlace:hover {
   border: 1px solid var(--borde);
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);   /* sombra para que "flote" */
+  box-shadow: 0 20px 50px rgba(13, 59, 76, 0.15);   /* sombra para que "flote" */
   backdrop-filter: blur(6px);                    /* desenfoca lo de atrás (efecto vidrio) */
 }
 
@@ -236,23 +242,19 @@ button.enlace:hover {
   width: 180px;
   max-width: 60%;
   margin-bottom: 12px;
-  filter: drop-shadow(0 10px 25px rgba(108, 197, 201, 0.35));
+  filter: drop-shadow(0 10px 25px rgba(31, 168, 176, 0.35));
   animation: flotar 6s ease-in-out infinite;   /* el logo "flota" como en el agua */
 }
 
 /* Texto con degradado: el fondo de colores se "recorta" con la forma de las letras */
-.lado-info h1,
-.nombre {
-  background: linear-gradient(90deg, var(--turquesa), var(--alga));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 .lado-info h1 {
   margin: 0;
   font-size: 56px;
   letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--turquesa), var(--alga));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .lema {
@@ -279,7 +281,7 @@ button.enlace:hover {
   justify-content: center;
   align-items: center;
   padding: 16px;
-  background: rgba(1, 20, 30, 0.45);   /* oscurece un poco, sin tapar la página */
+  background: rgba(13, 59, 76, 0.35);   /* oscurece un poco, sin tapar la página */
   z-index: 10;                      /* queda por encima de todo lo demás */
 }
 
@@ -295,7 +297,7 @@ button.enlace:hover {
   border-top: 4px solid var(--alga);   /* franja verde arriba */
   border-radius: 16px;
   padding: 28px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 50px rgba(13, 59, 76, 0.25);
   animation: aparecer 0.25s ease-out;  /* entra con un pequeño movimiento */
 }
 
@@ -337,8 +339,9 @@ button.enlace:hover {
   flex-direction: column;
   gap: 24px;
   padding: 24px 16px;
-  background: rgba(3, 43, 60, 0.9);
-  border-right: 1px solid var(--borde);
+  /* degradado de mar: de azul verdoso a azul más profundo */
+  background: linear-gradient(180deg, var(--mar) 0%, var(--mar-oscuro) 100%);
+  box-shadow: 4px 0 20px rgba(13, 59, 76, 0.15);
 }
 
 .marca {
@@ -353,9 +356,13 @@ button.enlace:hover {
   object-fit: contain;
 }
 
+/* En la barra el nombre va en blanco con un toque aguamarina */
 .nombre {
   font-size: 22px;
   font-weight: 700;
+  background: linear-gradient(90deg, #ffffff, #b8f1ee);
+  -webkit-background-clip: text;
+  background-clip: text;  color: transparent;
 }
 
 .menu {
@@ -370,19 +377,19 @@ button.enlace:hover {
   padding: 10px 12px;
   text-align: left;
   background: transparent;
-  color: var(--texto-suave);
+  color: rgba(255, 255, 255, 0.8);
   border: 1px solid transparent;
 }
 
 .pestana:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* La sección que se está viendo (el JS pone la clase "activa") */
 .pestana.activa {
-  color: var(--texto);
-  border-color: var(--turquesa);
-  background: rgba(108, 197, 201, 0.12);
+  color: var(--mar-oscuro);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .sesion {
@@ -394,7 +401,7 @@ button.enlace:hover {
 
 .usuario {
   font-size: 12px;
-  color: var(--texto-suave);
+  color: rgba(255, 255, 255, 0.8);
   word-break: break-all;            /* si el correo es largo, baja de línea */
 }
 
@@ -402,6 +409,8 @@ button.enlace:hover {
   margin: 0;
   padding: 8px;
   font-size: 14px;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 
@@ -432,7 +441,7 @@ button.enlace:hover {
   border: 1px solid var(--borde);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--sombra);
 }
 
 /* Círculo con el emoji (tarjetas de gráficas) */
@@ -444,7 +453,7 @@ button.enlace:hover {
   justify-content: center;
   font-size: 22px;
   border-radius: 50%;               /* 50% = círculo */
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(31, 168, 176, 0.12);
 }
 
 .subtitulo {
@@ -466,7 +475,7 @@ button.enlace:hover {
   text-align: center;
   border-top: 4px solid var(--turquesa);
   /* brillo turquesa suave alrededor */
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 0 40px rgba(108, 197, 201, 0.15);
+  box-shadow: 0 20px 50px rgba(13, 59, 76, 0.12), 0 0 40px rgba(31, 168, 176, 0.18);
 }
 
 /* Círculo grande con el ícono, flota como el logo del login */
@@ -478,7 +487,7 @@ button.enlace:hover {
   justify-content: center;
   font-size: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(108, 197, 201, 0.35), rgba(124, 200, 160, 0.25));
+  background: linear-gradient(135deg, rgba(31, 168, 176, 0.25), rgba(47, 174, 122, 0.18));
   border: 1px solid var(--turquesa);
   animation: flotar 6s ease-in-out infinite;
 }
@@ -526,7 +535,7 @@ button.enlace:hover {
   margin-bottom: 16px;
   border-radius: 16px;
   border: 1px solid var(--borde);
-  background: linear-gradient(90deg, rgba(108, 197, 201, 0.18), rgba(124, 200, 160, 0.10));
+  background: linear-gradient(90deg, rgba(31, 168, 176, 0.16), rgba(47, 174, 122, 0.10));
 }
 
 .dato-resumen {
@@ -580,7 +589,7 @@ button.enlace:hover {
 /* El periodo escogido se pinta de turquesa */
 .opcion.activa {
   background: var(--turquesa);
-  color: var(--fondo);
+  color: #ffffff;
   border-color: var(--turquesa);
 }
 
@@ -598,7 +607,7 @@ button.enlace:hover {
 /* Al pasar el mouse la tarjeta sube un poquito */
 .tarjetas .tarjeta:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 16px 40px rgba(13, 59, 76, 0.18);
 }
 
 /* Cada tarjeta con su color: franja de arriba y número grande */
@@ -656,13 +665,13 @@ button.enlace:hover {
 
 .chip.bien {
   color: var(--alga);
-  background: rgba(124, 200, 160, 0.15);
+  background: rgba(47, 174, 122, 0.12);
   border: 1px solid var(--alga);
 }
 
 .chip.alerta {
   color: var(--error);
-  background: rgba(255, 138, 138, 0.15);
+  background: rgba(229, 72, 77, 0.10);
   border: 1px solid var(--error);
 }
 
@@ -671,7 +680,7 @@ button.enlace:hover {
   width: 100%;
   height: 160px;
   border-radius: 10px;
-  background: rgba(3, 43, 60, 0.6);
+  background: var(--fondo-oscuro);
 }
 
 /* Promedio, mínimo y máximo debajo de cada gráfica (3 columnas) */
@@ -688,7 +697,7 @@ button.enlace:hover {
   align-items: center;
   padding: 8px;
   border-radius: 10px;
-  background: rgba(3, 43, 60, 0.6);
+  background: var(--fondo-oscuro);
 }
 
 .mini-datos span {
@@ -731,7 +740,7 @@ button.enlace:hover {
 }
 
 .filtro input {
-  color-scheme: dark;               /* el calendario sale en modo oscuro */
+  color-scheme: light;              /* el calendario sale en modo claro */
 }
 
 .filtro button {
@@ -748,8 +757,6 @@ button.enlace:hover {
 }
 
 .tabla-caja {
-  max-width: 900px;
-  margin: 16px auto 0;
   padding: 0;
   overflow-x: auto;                 /* en celular la tabla se puede mover de lado */
 }
@@ -772,16 +779,16 @@ button.enlace:hover {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--texto-suave);
-  background: rgba(3, 43, 60, 0.6);
+  background: var(--fondo-oscuro);
 }
 
 /* Filas alternadas de otro tono para leer más fácil */
 .tabla tbody tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(31, 168, 176, 0.04);
 }
 
 .tabla tbody tr:hover {
-  background: rgba(108, 197, 201, 0.10);
+  background: rgba(31, 168, 176, 0.10);
 }
 
 /* La columna de la hora resaltada */
@@ -879,7 +886,7 @@ button.enlace:hover {
   border-radius: 50%;
   font-size: 22px;
   font-weight: 700;
-  color: var(--fondo);
+  color: #ffffff;
   background: linear-gradient(135deg, var(--turquesa), var(--alga));
 }
 
@@ -913,11 +920,301 @@ button.enlace:hover {
 }
 
 
-/* ---------- 13) ANIMACIONES ---------- */
+/* ---------- 13) CORAL DE SALUD ---------- */
+/* El dibujo lo pone el JS dentro de cada class="coral".
+   Sus partes usan 3 colores (--c1, --c2, --c3) que cambian según el estado. */
+.coral {
+  /* colores por defecto (sin datos): gris clarito */
+  --c1: #d9e4e7;
+  --c2: #cfdde1;
+  --c3: #c5d6db;
+}
+
+/* Sano: coral colorido (coral, naranja y morado) */
+.sano .coral {
+  --c1: #ff6b6b;
+  --c2: #ffa64d;
+  --c3: #b86bd8;
+}
+
+/* En riesgo: los mismos colores pero pálidos */
+.riesgo .coral {
+  --c1: #f7b9b3;
+  --c2: #f8d4ad;
+  --c3: #dcc3e8;
+}
+
+/* Blanqueado: blanco hueso, como el coral cuando se enferma */
+.blanqueado .coral {
+  --c1: #f7f5f0;
+  --c2: #efede6;
+  --c3: #e8e5dc;
+}
+
+.coral svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Las ramas: líneas gruesas y redondeadas */
+.coral .rama path {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke 1s;            /* el cambio de color es suave */
+}
+
+/* Cuando está blanqueado se le pone un borde gris para que se note sobre blanco */
+.blanqueado .coral .rama {
+  filter: drop-shadow(0 0 1px #b9b5aa);
+}
+
+.coral .r1 path { stroke: var(--c1); }
+.coral .r2 path { stroke: var(--c2); }
+.coral .r3 path { stroke: var(--c3); }
+
+.coral .roca {
+  fill: #c9b79c;
+}
+
+/* Las ramas se mecen como con la corriente */
+.coral .rama {
+  transform-origin: 100px 190px;    /* gira desde la base del coral */
+  animation: mecerse 5s ease-in-out infinite;
+}
+
+.coral .r2 { animation-delay: -1.5s; }
+.coral .r3 { animation-delay: -3s; }
+
+/* Burbujas que suben */
+.coral .burbuja {
+  fill: none;
+  stroke: var(--turquesa);
+  stroke-width: 1.5;
+  opacity: 0;
+  animation: subir 4s ease-in infinite;
+}
+
+.coral .b2 { animation-delay: 1.3s; }
+.coral .b3 { animation-delay: 2.6s; }
+
+/* Tarjeta grande del coral en Inicio */
+.salud {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 20px 28px;
+  border-left: 6px solid var(--borde);
+  transition: border-color 1s, background 1s;
+}
+
+.salud .coral {
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.salud h2 {
+  margin: 4px 0;
+  font-size: 26px;
+}
+
+.salud p {
+  margin: 0 0 10px;
+  color: var(--texto-suave);
+}
+
+/* El color del borde y del fondo siguen el estado del coral */
+.salud.sano {
+  border-left-color: var(--coral);
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.10), var(--tarjeta) 60%);
+}
+
+.salud.riesgo {
+  border-left-color: #f0a35e;
+  background: linear-gradient(90deg, rgba(240, 163, 94, 0.12), var(--tarjeta) 60%);
+}
+
+.salud.blanqueado {
+  border-left-color: #b9b5aa;
+  background: linear-gradient(90deg, rgba(185, 181, 170, 0.18), var(--tarjeta) 60%);
+}
+
+.salud.sano h2 { color: var(--coral); }
+.salud.riesgo h2 { color: #d9822b; }
+.salud.blanqueado h2 { color: #8a857a; }
+
+/* Las 3 variables con su puntico verde o rojo */
+.indicadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;                 /* quita las viñetas */
+}
+
+.indicadores li {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: var(--fondo-oscuro);
+  border: 1px solid var(--borde);
+}
+
+.indicadores li::before {
+  content: "●  ";                   /* el puntico antes del texto */
+  color: var(--borde);
+}
+
+.indicadores li.bien::before { color: var(--alga); }
+.indicadores li.alerta::before { color: var(--error); }
+
+/* Leyenda de colores */
+.leyenda {
+  font-size: 12px;
+}
+
+.muestra {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 4px 0 10px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.muestra.sano { background: var(--coral); }
+.muestra.riesgo { background: #f7b9b3; }
+.muestra.blanqueado { background: #efede6; border: 1px solid #b9b5aa; }
+
+
+/* ---------- 14) CONSULTAS: RESUMEN DEL DÍA ---------- */
+/* Flechas ◀ ▶ para cambiar de día */
+.filtro .flecha {
+  padding: 12px 16px;
+}
+
+#resultadoDia {
+  max-width: 1000px;
+  margin: 20px auto 0;
+}
+
+/* Tarjetitas de resumen: tantas por fila como quepan */
+.resumen-dia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.dato-dia {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+}
+
+.dato-dia strong {
+  font-size: 24px;
+}
+
+.dato-dia small {
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.dato-dia.temp strong { color: var(--coral); }
+.dato-dia.ph strong { color: var(--turquesa); }
+.dato-dia.turb strong { color: var(--alga); }
+
+/* Tarjetita con el coral pequeño de ese día */
+.mini-coral {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.mini-coral .coral {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.mini-coral strong {
+  display: block;
+  font-size: 16px;
+}
+
+.mini-coral.sano strong { color: var(--coral); }
+.mini-coral.riesgo strong { color: #d9822b; }
+.mini-coral.blanqueado strong { color: #8a857a; }
+
+.grafica-dia {
+  margin-bottom: 16px;
+}
+
+/* Título a la izquierda y botones a la derecha */
+.cabeza-caja {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cabeza-caja h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cabeza-caja .periodo {
+  margin: 0;
+}
+
+.tabla-caja .cabeza-caja {
+  padding: 16px 16px 0;
+}
+
+.descargar {
+  width: auto;
+  margin: 0;
+  padding: 8px 16px;
+}
+
+/* Valor fuera de rango en la tabla */
+.tabla td.fuera {
+  color: var(--error);
+  font-weight: 700;
+}
+
+.tabla-caja .nota {
+  padding: 0 16px 16px;
+}
+
+
+/* ---------- 15) ANIMACIONES ---------- */
 /* Sube 10px a la mitad y vuelve (logo del login e ícono del ID) */
 @keyframes flotar {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-10px); }
+}
+
+/* Las ramas del coral se mueven un poquito a los lados */
+@keyframes mecerse {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+
+/* Las burbujas aparecen, suben y desaparecen */
+@keyframes subir {
+  0%   { opacity: 0; transform: translateY(0); }
+  20%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-70px); }
 }
 
 /* Los popups entran desde un poco abajo, de invisibles a visibles */
@@ -927,7 +1224,7 @@ button.enlace:hover {
 }
 
 
-/* ---------- 14) CELULAR (pantallas de 800px o menos) ---------- */
+/* ---------- 16) CELULAR (pantallas de 800px o menos) ---------- */
 /* @media: estas reglas solo aplican en pantallas pequeñas (responsive) */
 @media (max-width: 800px) {
 
@@ -1001,6 +1298,16 @@ button.enlace:hover {
 
   .dato-resumen {
     border-right: none;
+  }
+
+  /* La tarjeta del coral: el dibujo arriba y el texto debajo */
+  .salud {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .indicadores {
+    justify-content: center;
   }
 }
 
