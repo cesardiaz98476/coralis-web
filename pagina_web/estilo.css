@@ -906,5 +906,240 @@ color: var(--fondo);
 background: linear-gradient(135deg, var(--turquesa), var(--alga));
 }
 
+/* ============================================================
+   20) INICIO NUEVO: ID, RESUMEN, PERIODO, ESTADO Y TABLA
+   Pega todo esto AL FINAL de estilo.css
+   (va al final para que reemplace algunos estilos de arriba)
+   ============================================================ */
+
+/* ---------- Buscador del ID del dispositivo ---------- */
+.buscar-id {
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 4px solid var(--turquesa);   /* franja de color arriba */
+}
+
+.fila-id {
+  display: flex;                    /* el campo y el botón en la misma fila */
+  gap: 10px;
+}
+
+.fila-id input {
+  text-transform: uppercase;        /* lo que se escribe se ve en mayúsculas */
+}
+
+.fila-id button {
+  width: auto;
+  margin: 0;
+  padding: 12px 24px;
+  white-space: nowrap;              /* el texto del botón no se parte */
+}
+
+/* ---------- Franja de resumen (dispositivo, última lectura, cantidad) ---------- */
+.resumen {
+  display: flex;
+  flex-wrap: wrap;                  /* en pantallas pequeñas baja de línea */
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--borde);
+  /* degradado suave de turquesa a verde para que no se vea plano */
+  background: linear-gradient(90deg, rgba(108, 197, 201, 0.18), rgba(124, 200, 160, 0.10));
+}
+
+.dato-resumen {
+  display: flex;
+  flex-direction: column;
+  padding-right: 16px;
+  border-right: 1px solid var(--borde);   /* rayita que separa cada dato */
+}
+
+.dato-resumen:last-of-type {
+  border-right: none;
+}
+
+.etiqueta {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--texto-suave);
+}
+
+.dato-resumen strong {
+  font-size: 18px;
+}
+
+.cambiar-id {
+  width: auto;
+  margin: 0 0 0 auto;               /* margin-left: auto lo empuja a la derecha */
+  padding: 8px 16px;
+}
+
+/* ---------- Botones Semana / Mes ---------- */
+.periodo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.opcion {
+  width: auto;
+  margin: 0;
+  padding: 8px 20px;
+  border-radius: 999px;             /* bordes totalmente redondos (forma de pastilla) */
+  background: transparent;
+  color: var(--texto-suave);
+  border: 1px solid var(--borde);
+}
+
+/* El botón del periodo escogido se pinta de turquesa */
+.opcion.activa {
+  background: var(--turquesa);
+  color: var(--fondo);
+  border-color: var(--turquesa);
+}
+
+/* ---------- Tarjetas con más vida ---------- */
+.tarjeta.temp { border-top: 4px solid var(--coral); }
+.tarjeta.ph   { border-top: 4px solid var(--turquesa); }
+.tarjeta.turb { border-top: 4px solid var(--alga); }
+
+.tarjetas .tarjeta {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Al pasar el mouse la tarjeta sube un poquito */
+.tarjetas .tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.turb .valor span { color: var(--alga); }
+
+/* ---------- Etiqueta de estado (Normal / Fuera de rango) ---------- */
+.chip {
+  margin-left: auto;                /* la empuja a la derecha de la cabeza de la tarjeta */
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.chip:empty {
+  display: none;                    /* si no tiene texto, no se ve */
+}
+
+.chip.bien {
+  color: var(--alga);
+  background: rgba(124, 200, 160, 0.15);
+  border: 1px solid var(--alga);
+}
+
+.chip.alerta {
+  color: var(--error);
+  background: rgba(255, 138, 138, 0.15);
+  border: 1px solid var(--error);
+}
+
+/* ---------- Promedio, mínimo y máximo debajo de cada gráfica ---------- */
+.mini-datos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* 3 columnas iguales */
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mini-datos div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(3, 43, 60, 0.6);
+}
+
+.mini-datos span {
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.mini-datos strong {
+  font-size: 16px;
+}
+
+.nota {
+  margin: 16px 0 0;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+/* ---------- Consultas: tabla de lecturas del día ---------- */
+.tabla-caja {
+  margin-top: 16px;
+  padding: 0;
+  overflow-x: auto;                 /* en celular la tabla se puede mover de lado */
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;        /* une los bordes de las celdas */
+  font-size: 14px;
+}
+
+.tabla th,
+.tabla td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde);
+}
+
+.tabla th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--texto-suave);
+  background: rgba(3, 43, 60, 0.6);
+}
+
+/* Filas alternadas de otro tono para leer más fácil */
+.tabla tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tabla tbody tr:hover {
+  background: rgba(108, 197, 201, 0.10);
+}
+
+/* La columna de la hora resaltada */
+.tabla td:first-child {
+  color: var(--turquesa);
+  font-weight: 600;
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 800px) {
+  .fila-id {
+    flex-direction: column;
+  }
+
+  .fila-id button,
+  .cambiar-id {
+    width: 100%;
+    margin: 0;
+  }
+
+  .dato-resumen {
+    border-right: none;
+  }
+}
+
+
 
 
