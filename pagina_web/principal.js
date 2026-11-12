@@ -68,7 +68,7 @@ onAuthStateChanged(auth, (usuario) => {
 const SECCIONES = {
   inicio: "btnInicio",
   consultas: "btnConsultas",
-  cuenta: "btnCuenta",
+  nosotros: "btnNosotros",
   cuenta: "btnCuenta",
 };
 
