@@ -8,8 +8,8 @@
 //   4) Mi cuenta: cambiar la contraseña
 //   5) Escoger el dispositivo por su ID (ej: CORAL_1)
 //   6) Leer los datos de Firebase en tiempo real
-//   7) Inicio: gráficas por semana o por mes, resumen y estado
-//   8) Consultas: todas las lecturas de un día con su hora exacta
+//   7) Inicio: coral de salud, gráficas por semana o por mes, resumen y estado
+//   8) Consultas: resumen de un día, gráfica por horas, tabla y descarga
 //   9) Extra: el ojito de la contraseña
 // ============================================================
 
@@ -118,7 +118,7 @@ document.getElementById("btnSalir").addEventListener("click", async () => {
 
 // mostrarMensaje: escribe un aviso en el elemento con ese id.
 // Rojo por defecto (error); se le puede pasar verde para éxito.
-function mostrarMensaje(id, texto, color = "#ff8a8a") {
+function mostrarMensaje(id, texto, color = "#e5484d") {
   document.getElementById(id).textContent = texto;
   document.getElementById(id).style.color = color;
 }
@@ -154,7 +154,7 @@ async function cambiarClave() {
 
     await updatePassword(usuario, nueva);   // aquí se cambia de verdad
 
-    mostrarMensaje("msgCuenta", "Contraseña cambiada correctamente", "#7cc8a0");
+    mostrarMensaje("msgCuenta", "Contraseña cambiada correctamente", "#2fae7a");
     // Limpia los campos del formulario
     document.querySelectorAll("#cuenta input").forEach((campo) => (campo.value = ""));
   } catch (error) {
@@ -213,6 +213,8 @@ function cambiarId() {
   document.getElementById("formId").hidden = false;
   document.getElementById("idDispositivo").value = "";
   document.getElementById("estadoDatos").textContent = "Escribe el ID del dispositivo para ver sus datos.";
+  document.getElementById("fechaConsulta").value = "";
+  document.getElementById("resultadoDia").hidden = true;
 }
 
 document.getElementById("formId").addEventListener("submit", escogerDispositivo);
@@ -282,9 +284,10 @@ function escucharDatos(carpeta) {
 
       actualizarInicio();
 
-      // En Consultas dejamos escogido, por defecto, el día de la última lectura
+      // En Consultas: la primera vez se muestra el día de la última lectura;
+      // después se vuelve a mostrar el día que se estaba viendo (con los datos nuevos)
       const campoFecha = document.getElementById("fechaConsulta");
-      if (!campoFecha.value) campoFecha.value = claveDia(ultimo.hora);
+      mostrarDia(campoFecha.value || claveDia(ultimo.hora));
     },
     (error) => {
       // Se ejecuta si las reglas no dejan leer (por ejemplo, sin sesión)
@@ -321,7 +324,7 @@ function escribirNumero(id, numero, decimales) {
 
 
 // ============================================================
-// 7) INICIO: GRÁFICAS POR SEMANA O POR MES
+// 7) INICIO: CORAL DE SALUD Y GRÁFICAS POR SEMANA O POR MES
 // ============================================================
 
 let diasPeriodo = 7;   // 7 = semana, 30 = mes
@@ -334,50 +337,127 @@ const RANGOS = {
   turb: { min: 0, max: 5 },
 };
 
-// Cada variable con sus ids en el HTML y cuántos decimales mostrar
+// Cada variable con sus ids en el HTML, su nombre y cuántos decimales mostrar
 const VARIABLES = {
-  temp: { valor: "valorTemp", cambio: "cambioTemp", chip: "chipTemp", prom: "promTemp", min: "minTemp", max: "maxTemp", decimales: 1 },
-  ph: { valor: "valorPh", cambio: "cambioPh", chip: "chipPh", prom: "promPh", min: "minPh", max: "maxPh", decimales: 2 },
-  turb: { valor: "valorTurb", cambio: "cambioTurb", chip: "chipTurb", prom: "promTurb", min: "minTurb", max: "maxTurb", decimales: 1 },
+  temp: { nombre: "Temperatura", unidad: " °C", valor: "valorTemp", cambio: "cambioTemp", chip: "chipTemp", prom: "promTemp", min: "minTemp", max: "maxTemp", decimales: 1 },
+  ph: { nombre: "pH", unidad: "", valor: "valorPh", cambio: "cambioPh", chip: "chipPh", prom: "promPh", min: "minPh", max: "maxPh", decimales: 2 },
+  turb: { nombre: "Turbidez", unidad: " NTU", valor: "valorTurb", cambio: "cambioTurb", chip: "chipTurb", prom: "promTurb", min: "minTurb", max: "maxTurb", decimales: 1 },
 };
 
-// crearGrafica: crea una gráfica de línea vacía en el <canvas> indicado y la devuelve
-function crearGrafica(idCanvas, nombre, color) {
+// Colores de las líneas de las gráficas y de sus letras/rayitas (tema claro)
+const COLORES = { temp: "#ff6b6b", ph: "#1fa8b0", turb: "#2fae7a" };
+const COLOR_LETRAS = "#557a87";
+const COLOR_RAYAS = "#e1eef1";
+
+// enRango: true si el valor está dentro del rango de referencia
+function enRango(nombre, valor) {
+  return !isNaN(valor) && valor >= RANGOS[nombre].min && valor <= RANGOS[nombre].max;
+}
+
+
+// ---------- EL CORAL QUE CAMBIA DE COLOR ----------
+// Dibujo del coral (SVG). Cada parte usa un color del CSS (--c1, --c2, --c3),
+// así el CSS lo pinta colorido (sano), pálido (en riesgo) o blanco (blanqueado).
+const DIBUJO_CORAL = `
+<svg viewBox="0 0 200 200" aria-hidden="true">
+  <circle class="burbuja b1" cx="40" cy="150" r="5"/>
+  <circle class="burbuja b2" cx="160" cy="140" r="4"/>
+  <circle class="burbuja b3" cx="150" cy="80" r="3"/>
+  <g class="rama r1">
+    <path d="M100 190 C98 160 92 140 70 120 C58 110 52 95 56 78" />
+    <path d="M70 120 C55 118 40 108 36 92" />
+    <path d="M84 134 C90 115 104 104 104 84" />
+  </g>
+  <g class="rama r2">
+    <path d="M100 190 C104 160 112 140 134 124 C148 114 152 98 148 82" />
+    <path d="M134 124 C150 124 162 114 166 98" />
+    <path d="M118 140 C114 120 120 104 128 92" />
+  </g>
+  <g class="rama r3">
+    <path d="M100 190 C100 150 100 110 100 60" />
+    <path d="M100 110 C88 100 84 86 86 70" />
+    <path d="M100 96 C112 88 116 74 114 60" />
+  </g>
+  <ellipse class="roca" cx="100" cy="192" rx="62" ry="10"/>
+</svg>`;
+
+// Se pone el dibujo en todos los lugares que tengan class="coral"
+document.querySelectorAll(".coral").forEach((caja) => (caja.innerHTML = DIBUJO_CORAL));
+
+// saludDelCoral: según cuántos valores están en rango, decide el estado del coral
+//   3 de 3 en rango -> sano (colorido)
+//   1 o 2           -> en riesgo (pálido)
+//   0               -> blanqueado (blanco)
+function saludDelCoral(valores) {
+  const nombres = Object.keys(VARIABLES).filter((n) => !isNaN(valores[n]));   // solo los que tienen dato
+  const bien = nombres.filter((n) => enRango(n, valores[n]));
+  if (nombres.length === 0) return { clase: "", titulo: "Sin datos", bien, nombres };
+  if (bien.length === nombres.length) return { clase: "sano", titulo: "Coral saludable", bien, nombres };
+  if (bien.length === 0) return { clase: "blanqueado", titulo: "Coral blanqueado", bien, nombres };
+  return { clase: "riesgo", titulo: "Coral en riesgo", bien, nombres };
+}
+
+// pintarSaludInicio: actualiza la tarjeta grande del coral con la última lectura
+function pintarSaludInicio(ultimo) {
+  const salud = saludDelCoral(ultimo);
+  document.getElementById("tarjetaSalud").className = "tarjeta salud " + salud.clase;
+  document.getElementById("saludTitulo").textContent = salud.titulo;
+
+  const fuera = salud.nombres.filter((n) => !salud.bien.includes(n)).map((n) => VARIABLES[n].nombre);
+  let detalle = "Todos los valores están dentro del rango sano para los corales.";
+  if (salud.clase === "riesgo") detalle = "Fuera de rango: " + fuera.join(", ") + ". Si sigue así, el coral se puede blanquear.";
+  if (salud.clase === "blanqueado") detalle = "Todos los valores están fuera de rango (" + fuera.join(", ") + "). Así el coral pierde su color.";
+  document.getElementById("saludDetalle").textContent = detalle;
+
+  // Un puntico verde o rojo por cada variable
+  for (const nombre in VARIABLES) {
+    const item = document.getElementById("ind" + nombre[0].toUpperCase() + nombre.slice(1));
+    item.className = isNaN(ultimo[nombre]) ? "" : enRango(nombre, ultimo[nombre]) ? "bien" : "alerta";
+  }
+}
+
+
+// ---------- GRÁFICAS ----------
+// crearGrafica: crea una gráfica de línea vacía en el <canvas> indicado y la devuelve.
+// proporcion = cuántas veces más ancha que alta (2 si no se dice nada)
+function crearGrafica(idCanvas, nombre, color, proporcion = 2) {
   return new Chart(document.getElementById(idCanvas), {
     type: "line",
     data: {
-      labels: [],                        // eje X (días); se llena después
+      labels: [],                        // eje X; se llena después
       datasets: [{
         label: nombre,
-        data: [],                        // eje Y (promedio de cada día); se llena después
+        data: [],                        // eje Y; se llena después
         borderColor: color,
-        backgroundColor: color + "33",   // el mismo color pero transparente (relleno)
+        backgroundColor: color + "26",   // el mismo color pero transparente (relleno)
         fill: true,
         tension: 0.3,                    // línea un poco curva
         pointRadius: 3,
+        pointBackgroundColor: color,
+        borderWidth: 2.5,
         spanGaps: true,                  // si un día no tiene datos, une los puntos de al lado
       }],
     },
     options: {
-      aspectRatio: 2,                    // el doble de ancha que de alta
+      aspectRatio: proporcion,
       plugins: { legend: { display: false } },
       scales: {
-        x: { ticks: { color: "#a7c4cf", maxTicksLimit: 8 }, grid: { color: "#1f5266" } },
-        y: { ticks: { color: "#a7c4cf" }, grid: { color: "#1f5266" } },
+        x: { ticks: { color: COLOR_LETRAS, maxTicksLimit: 8 }, grid: { color: COLOR_RAYAS } },
+        y: { ticks: { color: COLOR_LETRAS }, grid: { color: COLOR_RAYAS } },
       },
     },
   });
 }
 
-// Las 3 gráficas se crean una sola vez y luego solo se les cambian los datos
+// Las 3 gráficas de Inicio se crean una sola vez y luego solo se les cambian los datos
 const graficas = {
-  temp: crearGrafica("graficaTemp", "Temperatura (°C)", "#ff6b6b"),
-  ph: crearGrafica("graficaPh", "pH", "#6cc5c9"),
-  turb: crearGrafica("graficaTurb", "Turbidez (NTU)", "#7cc8a0"),
+  temp: crearGrafica("graficaTemp", "Temperatura (°C)", COLORES.temp),
+  ph: crearGrafica("graficaPh", "pH", COLORES.ph),
+  turb: crearGrafica("graficaTurb", "Turbidez (NTU)", COLORES.turb),
 };
 
 // actualizarInicio: arma los días del periodo, saca el promedio de cada día
-// y actualiza gráficas, tarjetas, mínimo/máximo y estado
+// y actualiza gráficas, tarjetas, mínimo/máximo, estado y el coral
 function actualizarInicio() {
   if (todosLosDatos.length === 0) return;
 
@@ -394,7 +474,7 @@ function actualizarInicio() {
   document.getElementById("resCantidad").textContent = delPeriodo.length;
 
   // Eje X: el día en formato corto, ej: 12/11
-  const etiquetas = dias.map((clave) => clave.slice(8, 10) + "/" + clave.slice(5, 7));
+  const etiquetas = dias.map(diaCorto);
 
   for (const nombre in VARIABLES) {
     const v = VARIABLES[nombre];
@@ -420,8 +500,15 @@ function actualizarInicio() {
     escribirNumero(v.min, valores.length ? Math.min(...valores) : NaN, v.decimales);
     escribirNumero(v.max, valores.length ? Math.max(...valores) : NaN, v.decimales);
 
-    ponerEstado(v.chip, ultimo[nombre], RANGOS[nombre]);
+    ponerEstado(v.chip, nombre, ultimo[nombre]);
   }
+
+  pintarSaludInicio(ultimo);
+}
+
+// diaCorto: de "2026-11-12" a "12/11"
+function diaCorto(clave) {
+  return clave.slice(8, 10) + "/" + clave.slice(5, 7);
 }
 
 // ponerValor: escribe el valor más nuevo en la tarjeta y debajo
@@ -439,23 +526,27 @@ function ponerValor(v, actual, anterior) {
 }
 
 // ponerEstado: la etiqueta de color arriba a la derecha de cada tarjeta
-function ponerEstado(idChip, valor, rango) {
+function ponerEstado(idChip, nombre, valor) {
   const chip = document.getElementById(idChip);
   if (isNaN(valor)) {
     chip.textContent = "";
     chip.className = "chip";
     return;
   }
-  const normal = valor >= rango.min && valor <= rango.max;
+  const normal = enRango(nombre, valor);
   chip.textContent = normal ? "Normal" : "Fuera de rango";
   chip.className = "chip " + (normal ? "bien" : "alerta");   // el CSS les da color verde o rojo
+}
+
+// marcarBoton: pinta el botón escogido de un grupo (Semana/Mes, Temp/pH/Turb)
+function marcarBoton(ids, elegido) {
+  ids.forEach((id) => document.getElementById(id).classList.toggle("activa", id === elegido));
 }
 
 // cambiarPeriodo: los botones Semana / Mes
 function cambiarPeriodo(dias) {
   diasPeriodo = dias;
-  document.getElementById("btnSemana").classList.toggle("activa", dias === 7);
-  document.getElementById("btnMes").classList.toggle("activa", dias === 30);
+  marcarBoton(["btnSemana", "btnMes"], dias === 7 ? "btnSemana" : "btnMes");
   actualizarInicio();
 }
 
@@ -464,45 +555,158 @@ document.getElementById("btnMes").addEventListener("click", () => cambiarPeriodo
 
 
 // ============================================================
-// 8) CONSULTAS: TODAS LAS LECTURAS DE UN DÍA
-// Muestra la hora exacta (timestamp) en que la Raspberry tomó cada dato
+// 8) CONSULTAS: TODO SOBRE UN DÍA
+// Resumen, coral de ese día, gráfica por horas y la tabla con la
+// hora exacta (timestamp) en que la Raspberry tomó cada dato
 // ============================================================
-function consultarDia(evento) {
-  evento.preventDefault();
-  const caja = document.getElementById("cajaTabla");
-  const cuerpo = document.getElementById("cuerpoTabla");
+
+let variableDia = "temp";   // qué variable se ve en la gráfica del día
+let lecturasDelDia = [];    // las lecturas del día que se está viendo
+
+// La gráfica del día se crea una sola vez
+const graficaDia = crearGrafica("graficaDia", "Temperatura (°C)", COLORES.temp, 3.5);   // más ancha que alta
+
+// diasConDatos: lista de días (AAAA-MM-DD) que tienen al menos una lectura
+function diasConDatos() {
+  return [...new Set(todosLosDatos.map((d) => claveDia(d.hora)))];
+}
+
+// mostrarDia: llena toda la sección de Consultas con el día escogido
+function mostrarDia(dia) {
+  const resultado = document.getElementById("resultadoDia");
+  document.getElementById("fechaConsulta").value = dia;
 
   if (!idActual) {
-    caja.hidden = true;
+    resultado.hidden = true;
     return mostrarMensaje("msgConsulta", "Primero escribe el ID del dispositivo en Inicio.");
   }
 
-  const dia = document.getElementById("fechaConsulta").value;   // viene como AAAA-MM-DD
-  const delDia = todosLosDatos.filter((d) => claveDia(d.hora) === dia);
-
-  if (delDia.length === 0) {
-    caja.hidden = true;
-    return mostrarMensaje("msgConsulta", "No hay lecturas de " + idActual + " ese día.");
+  // Texto de arriba: cuántos días tienen datos y desde cuándo
+  const dias = diasConDatos();
+  if (dias.length > 0) {
+    document.getElementById("estadoConsulta").textContent =
+      idActual + " tiene datos de " + dias.length + " días, del " + diaCorto(dias[0]) + " al " + diaCorto(dias[dias.length - 1]) + ".";
   }
 
-  mostrarMensaje("msgConsulta", delDia.length + " lecturas de " + idActual + " ese día.", "#7cc8a0");
+  lecturasDelDia = todosLosDatos.filter((d) => claveDia(d.hora) === dia);
 
-  // Una fila por lectura; la más nueva arriba
-  cuerpo.innerHTML = "";
-  [...delDia].reverse().forEach((d) => {
-    const fila = document.createElement("tr");
-    [horaCompleta(d.hora), d.temp, d.ph, d.turb].forEach((dato, i) => {
-      const celda = document.createElement("td");
-      if (i === 0) celda.textContent = dato;
-      else celda.textContent = isNaN(dato) ? "--" : dato.toFixed(i === 2 ? 2 : 1);
-      fila.appendChild(celda);
-    });
-    cuerpo.appendChild(fila);
-  });
-  caja.hidden = false;
+  if (lecturasDelDia.length === 0) {
+    resultado.hidden = true;
+    return mostrarMensaje("msgConsulta", "No hay lecturas de " + idActual + " ese día. Prueba con las flechas ◀ ▶.");
+  }
+  mostrarMensaje("msgConsulta", "");
+
+  // --- Resumen: cantidad y primera/última hora ---
+  const primera = lecturasDelDia[0].hora;
+  const ultima = lecturasDelDia[lecturasDelDia.length - 1].hora;
+  document.getElementById("diaCantidad").textContent = lecturasDelDia.length;
+  document.getElementById("diaRango").textContent = soloHora(primera) + " a " + soloHora(ultima);
+
+  // --- Resumen de cada variable: promedio y mínimo/máximo ---
+  const promedios = {};
+  for (const nombre in VARIABLES) {
+    const v = VARIABLES[nombre];
+    const valores = lecturasDelDia.map((d) => d[nombre]).filter((n) => !isNaN(n));
+    promedios[nombre] = promedio(valores);
+    const id = "dia" + nombre[0].toUpperCase() + nombre.slice(1);   // diaTemp, diaPh, diaTurb
+    document.getElementById(id).textContent = isNaN(promedios[nombre]) ? "--" : promedios[nombre].toFixed(v.decimales) + v.unidad;
+    document.getElementById(id + "Rango").textContent = valores.length
+      ? "mín " + Math.min(...valores).toFixed(v.decimales) + " · máx " + Math.max(...valores).toFixed(v.decimales)
+      : "";
+  }
+
+  // --- Coral de ese día (con los promedios del día) ---
+  const salud = saludDelCoral(promedios);
+  document.getElementById("saludDia").className = "tarjeta mini-coral " + salud.clase;
+  document.getElementById("saludDiaTexto").textContent = salud.titulo;
+
+  pintarGraficaDia();
+  pintarTabla();
+  resultado.hidden = false;
 }
 
-document.getElementById("formConsulta").addEventListener("submit", consultarDia);
+// soloHora: de una fecha saca solo la hora, ej: 3:00 p. m.
+function soloHora(fecha) {
+  return fecha.toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit", timeZone: ZONA });
+}
+
+// pintarGraficaDia: la gráfica de la variable escogida, hora por hora
+function pintarGraficaDia() {
+  const v = VARIABLES[variableDia];
+  const dataset = graficaDia.data.datasets[0];
+  graficaDia.data.labels = lecturasDelDia.map((d) => soloHora(d.hora));
+  dataset.data = lecturasDelDia.map((d) => (isNaN(d[variableDia]) ? null : d[variableDia]));
+  dataset.label = v.nombre;
+  dataset.borderColor = COLORES[variableDia];
+  dataset.pointBackgroundColor = COLORES[variableDia];
+  dataset.backgroundColor = COLORES[variableDia] + "26";
+  graficaDia.update();
+}
+
+// pintarTabla: una fila por lectura (la más nueva arriba).
+// Los valores fuera de rango se pintan de rojo.
+function pintarTabla() {
+  const cuerpo = document.getElementById("cuerpoTabla");
+  cuerpo.innerHTML = "";
+  [...lecturasDelDia].reverse().forEach((d) => {
+    const fila = document.createElement("tr");
+
+    const celdaHora = document.createElement("td");
+    celdaHora.textContent = horaCompleta(d.hora);
+    fila.appendChild(celdaHora);
+
+    for (const nombre in VARIABLES) {
+      const celda = document.createElement("td");
+      const valor = d[nombre];
+      celda.textContent = isNaN(valor) ? "--" : valor.toFixed(VARIABLES[nombre].decimales);
+      if (!isNaN(valor) && !enRango(nombre, valor)) celda.className = "fuera";
+      fila.appendChild(celda);
+    }
+    cuerpo.appendChild(fila);
+  });
+}
+
+// moverDia: las flechas ◀ ▶ saltan al día anterior/siguiente que tenga datos
+function moverDia(direccion) {
+  const dias = diasConDatos();
+  if (dias.length === 0) return;
+  const actual = document.getElementById("fechaConsulta").value;
+  let destino;
+  if (direccion < 0) destino = [...dias].reverse().find((d) => d < actual) ?? dias[0];
+  else destino = dias.find((d) => d > actual) ?? dias[dias.length - 1];
+  mostrarDia(destino);
+}
+
+// descargarCSV: baja un archivo .csv (se abre en Excel) con las lecturas del día
+function descargarCSV() {
+  const filas = [["timestamp", "fecha_hora", "temperatura_c", "ph", "turbidez_ntu"]];
+  lecturasDelDia.forEach((d) => filas.push([d.hora.toISOString(), horaCompleta(d.hora), d.temp, d.ph, d.turb]));
+  const texto = filas.map((f) => f.map((x) => '"' + x + '"').join(",")).join("\n");
+
+  const enlace = document.createElement("a");
+  enlace.href = URL.createObjectURL(new Blob([texto], { type: "text/csv" }));
+  enlace.download = idActual + "_" + document.getElementById("fechaConsulta").value + ".csv";
+  enlace.click();
+}
+
+// Botones de Consultas
+document.getElementById("formConsulta").addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  mostrarDia(document.getElementById("fechaConsulta").value);
+});
+document.getElementById("btnDiaAnterior").addEventListener("click", () => moverDia(-1));
+document.getElementById("btnDiaSiguiente").addEventListener("click", () => moverDia(1));
+document.getElementById("btnDescargar").addEventListener("click", descargarCSV);
+
+// Botones Temperatura / pH / Turbidez de la gráfica del día
+const BOTONES_DIA = { temp: "btnVerTemp", ph: "btnVerPh", turb: "btnVerTurb" };
+for (const nombre in BOTONES_DIA) {
+  document.getElementById(BOTONES_DIA[nombre]).addEventListener("click", () => {
+    variableDia = nombre;
+    marcarBoton(Object.values(BOTONES_DIA), BOTONES_DIA[nombre]);
+    pintarGraficaDia();
+  });
+}
 
 
 // ============================================================
