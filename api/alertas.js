@@ -200,14 +200,24 @@ async function revisarLectura(lectura) {
   return `${nodeId}: correo enviado a ${correos.length} suscrito(s)`;
 }
 
+// Recorre carpetas y subcarpetas (ej: lecturas/coralis-device/historial/-P4M9...)
+// y guarda en "lista" todo lo que sea una lectura (tiene node_id).
+function juntarLecturas(nodo, lista) {
+  if (!nodo || typeof nodo !== "object") return;
+  const d = nodo.uplink_message?.decoded_payload ?? nodo;
+  if (d.node_id) lista.push(nodo);                                       // es una lectura
+  else Object.values(nodo).forEach((hijo) => juntarLecturas(hijo, lista)); // es una carpeta: entramos
+}
+
 // Busca en Firebase la última lectura de cada Raspberry
 async function ultimasLecturas() {
   const ultimas = {};
   for (const carpeta of ["mediciones", "lecturas"]) {
-    const datos = (await db.ref(carpeta).orderByKey().limitToLast(50).get()).val() || {};
-    for (const lectura of Object.values(datos)) {   // vienen en orden: la última queda de último
-      const d = lectura?.uplink_message?.decoded_payload ?? lectura;
-      if (d && d.node_id) ultimas[String(d.node_id).toUpperCase()] = lectura;
+    const lista = [];
+    juntarLecturas((await db.ref(carpeta).get()).val(), lista);
+    for (const lectura of lista) {   // vienen en orden: la última queda de último
+      const d = lectura.uplink_message?.decoded_payload ?? lectura;
+      ultimas[String(d.node_id).toUpperCase()] = lectura;
     }
   }
   return Object.values(ultimas);
