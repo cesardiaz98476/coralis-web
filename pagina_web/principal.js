@@ -3,7 +3,7 @@
 //
 // Qué hace este archivo, en orden:
 //   1) Revisa que haya sesión iniciada (si no, manda al login)
-//   2) Cambia entre las secciones Inicio / Consultas / Sobre nosotros / Mi cuenta
+//   2) Cambia entre las secciones Inicio / Consultas / Mi cuenta
 //   3) Cierra la sesión
 //   4) Mi cuenta: cambiar la contraseña
 //   5) Escoger el dispositivo por su ID (ej: CORAL_1)
@@ -82,7 +82,6 @@ onAuthStateChanged(auth, (usuario) => {
 const SECCIONES = {
   inicio: "btnInicio",
   consultas: "btnConsultas",
-  nosotros: "btnNosotros",
   cuenta: "btnCuenta",
 };
 
@@ -99,7 +98,6 @@ function mostrarSeccion(elegida) {
 // Cada botón del menú llama a mostrarSeccion con su sección
 document.getElementById("btnInicio").addEventListener("click", () => mostrarSeccion("inicio"));
 document.getElementById("btnConsultas").addEventListener("click", () => mostrarSeccion("consultas"));
-document.getElementById("btnNosotros").addEventListener("click", () => mostrarSeccion("nosotros"));
 document.getElementById("btnCuenta").addEventListener("click", () => mostrarSeccion("cuenta"));
 
 

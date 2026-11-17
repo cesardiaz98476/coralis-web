@@ -1055,6 +1055,19 @@ button.enlace:hover {
 }
 
 
+.pie-nota a {
+  color: var(--blanco);
+  text-underline-offset: 3px;
+}
+
+.datos-academicos a {
+  color: var(--mar-oscuro);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-underline-offset: 3px;
+}
+
+
 /* ---------- 9) VENTANAS EMERGENTES (POPUPS DEL LOGIN) ---------- */
 /* Empiezan ocultas; el JS les pone la clase "abierto" para mostrarlas */
 .popup {

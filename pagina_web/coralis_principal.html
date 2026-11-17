@@ -35,10 +35,6 @@
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>
         <span>Consultas</span>
       </button>
-      <button type="button" class="pestana" id="btnNosotros">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2c1.4 0 2.1.6 3 1.2"/><path d="M3 16c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2c1.4 0 2.1.6 3 1.2"/></svg>
-        <span>Sobre nosotros</span>
-      </button>
       <button type="button" class="pestana" id="btnCuenta">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.4 3.9-5 7-5s5.8 1.6 7 5"/></svg>
         <span>Mi cuenta</span>
@@ -374,108 +370,6 @@
 
 
 
-    <!-- ========== SECCIÓN 4: SOBRE NOSOTROS ========== -->
-    <!-- Llena lo que está entre [corchetes] -->
-    <section id="nosotros" hidden>
-      <h1>Sobre nosotros</h1>
-      <p class="estado">Monitoreo de la calidad del agua para cuidar los corales.</p>
-
-      <div class="nosotros-panel">
-
-        <!-- El proyecto -->
-        <article class="tarjeta bloque">
-          <h3>El proyecto</h3>
-          <p>
-            Coralis vigila el agua que rodea a los corales. Mide temperatura, pH y turbidez, compara cada
-            lectura con rangos sanos y avisa cuando las condiciones pueden blanquear el coral.
-          </p>
-          <p>
-            Los arrecifes albergan buena parte de la vida marina y protegen las costas del oleaje. Cuando
-            el coral se blanquea, todo ese ecosistema se debilita; detectarlo a tiempo da margen para actuar.
-          </p>
-        </article>
-
-        <!-- El producto -->
-        <article class="tarjeta bloque">
-          <h3>El producto</h3>
-          <p>Un dispositivo con sensores conectados a una Raspberry Pi que toma lecturas del agua y las envía por LoRaWAN.</p>
-          <ul>
-            <li><strong>Temperatura:</strong> el calor es la causa principal del blanqueamiento.</li>
-            <li><strong>pH:</strong> un agua más ácida le impide al coral formar bien su esqueleto.</li>
-            <li><strong>Turbidez:</strong> el agua turbia tapa la luz que necesitan las algas del coral.</li>
-            <li><strong>Fotos de los corales:</strong> [para qué sirven]</li>
-          </ul>
-        </article>
-
-        <!-- Cómo funciona -->
-        <article class="tarjeta bloque">
-          <h3>Cómo funciona</h3>
-          <p class="flujo">Sensores → Raspberry Pi → Heltec LoRa32 → LoRaWAN → TTN → Firebase → Página web</p>
-          <p>
-            La Raspberry arma cada lectura con su hora y el ID del dispositivo, la Heltec la envía por radio,
-            The Things Network la recibe y Firebase guarda el historial que ves en esta página.
-          </p>
-        </article>
-
-        <!-- Objetivos -->
-        <article class="tarjeta bloque">
-          <h3>Objetivos</h3>
-          <ul>
-            <li>Medir en tiempo real la temperatura, el pH y la turbidez del agua.</li>
-            <li>Mostrar el estado del coral de forma clara, con un dibujo que pierde color cuando hay riesgo.</li>
-            <li>Avisar por correo cuando las condiciones cambian de nivel.</li>
-          </ul>
-        </article>
-      </div>
-
-      <!-- Autores: copia un <div class="autor"> por cada integrante (foto en la carpeta fotos/) -->
-      <h2 class="subtitulo-seccion">Autores</h2>
-      <div class="autores">
-        <div class="autor">
-          <img class="avatar" src="fotos/cesar-diaz.jpg" alt="Foto de Cesar Esteban Diaz" width="72" height="72">
-          <h3>Cesar Esteban Diaz</h3>
-          <p>Página web y base de datos</p>
-          <p class="pequeno">Ingeniería Mecatrónica</p>
-        </div>
-
-        <div class="autor">
-          <img class="avatar" src="fotos/laura-gabriela-hernandez.jpg" alt="Foto de Laura Gabriela Hernandez" width="72" height="72">
-          <h3>Laura Gabriela Hernandez</h3>
-          <p>Sensores y Raspberry Pi</p>
-          <p class="pequeno">Bioingeniería</p>
-        </div>
-
-        <div class="autor">
-          <img class="avatar" src="fotos/katheryn-camacho.jpg" alt="Foto de Katheryn Camacho Gonzalez" width="72" height="72">
-          <h3>Katheryn Camacho Gonzalez</h3>
-          <p>Comunicación LoRaWAN y TTN</p>
-          <p class="pequeno">[Carrera]</p>
-        </div>
-      </div>
-
-      <div class="nosotros-panel">
-        <!-- Datos académicos -->
-        <article class="tarjeta bloque">
-          <h3>Información académica</h3>
-          <div class="profe">
-            <img src="fotos/wilder-castellanos.jpg" alt="Foto del profesor Wilder Castellanos" width="56" height="56">
-            <div>
-              <strong>Wilder Castellanos</strong>
-              <span>Profesor</span>
-            </div>
-          </div>
-          <p><strong>Universidad:</strong> Pontificia Universidad Javeriana</p>
-          <p><strong>Materia:</strong> Fundamentos de IoT</p>
-          <p><strong>Año:</strong> 2026</p>
-        </article>
-
-        <!-- Contacto (opcional, si no lo quieres borra este bloque) -->
-        <article class="tarjeta bloque">
-          <h3>Contacto</h3>
-          <p>[Correo del grupo o enlace al repositorio]</p>
-        </article>
-      </div>
-    </section>
 
   </main>
 
